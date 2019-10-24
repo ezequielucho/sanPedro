@@ -1,0 +1,22 @@
+{
+  "name": "sanpedro",
+  "version": "1.0.0",
+  "description": "Paquete instalado en el servidor sanPedro.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ezequielucho/sanPedro.git"
+  },
+  "author": "Eze",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ezequielucho/sanPedro/issues"
+  },
+  "homepage": "https://github.com/ezequielucho/sanPedro#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
