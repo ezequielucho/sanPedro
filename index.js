@@ -1,35 +1,38 @@
 var express = require('express');
-var sql = require('mssql');
-var path = require('path');
 var app = express();
 
-async function testSql()
-{
-    try
-    {
-        await sql.ConnectionError('mssql:sa:LOperas93786@silema.hiterp.com/Fac_Demo');
-        var result = await sql.query`select codi, nom from clients`;
-        return result;
-    } catch(err)
-    {
-        console.log(err);
-    }
-}
+app.get('/', function (req, res) {
+   
+    var sql = require("mssql");
 
-app.get("/", function(req, res){
-    testSql().then(resultado=>{
-        if(resultado)
-        {
-            res.writeHead(200, {'content-type': 'application/json'})
-            res.end(JSON.stringify(resultado));
-        }
-        else
-        {
-            console.log("Error 10");
-            res.writeHead(200, {'content-type': 'text/html'})
-            res.end('Error en la consulta procedimiento');
-        }
+    // config for your database
+    var config = {
+        user: 'sa',
+        password: 'LOperas93786',
+        server: 'silema.hiterp.com', 
+        database: 'Fac_Demo' 
+    };
+
+    // connect to your database
+    sql.connect(config, function (err) {
+    
+        if (err) console.log(err);
+
+        // create Request object
+        var request = new sql.Request();
+           
+        // query to the database and get the records
+        request.query('select codi, nom from clients', function (err, recordset) {
+            
+            if (err) console.log(err)
+
+            // send records as a response
+            res.send(recordset);
+            
+        });
     });
 });
 
-app.listen(8080);
+var server = app.listen(8080, function () {
+    console.log('Server is running..');
+});
