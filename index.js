@@ -27,7 +27,7 @@ app.get('/', function (req, res) {
             if (err) console.log(err)
 
             // send records as a response            
-            res.writeHead(200, {'content-type': 'application/json'})
+            res.writeHead(200, {'content-type': 'application/javascript'})
             res.end(JSON.stringify(recordset));
             sql.close();
         });
