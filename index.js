@@ -2,11 +2,24 @@ const path = require('path');
 const express = require('express');
 const app = express();
 
+//SETTINGS
 app.set('port', process.env.PORT || 8080);
-
+//STATIC FILES
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-app.listen(app.get('port'), () =>{
+//START SERVER
+const server = app.listen(app.get('port'), () =>{
     console.log('server on port', app.get('port'));
-})
+});
+
+//WEBSOCKETS
+const socketIO = require('socket.io');
+const io = socketIO(server);
+
+io.on('connection', (socket)=>{
+    console.log('Nueva conexión con ID' + socket.id);
+    socket.on('eze-test', (data)=>{
+        console.log("Mi primer web socket es: " + data);
+        io.sockets.emit('escucho', 'fuck you');
+    });
+});
