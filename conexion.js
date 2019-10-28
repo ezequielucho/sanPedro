@@ -20,6 +20,7 @@ function recHit(database, consultaSQL)
             }
             sql.close();
             console.log("Esta es la prueba de que SÍ entra a la función");
+            console.log(recordset);
             return JSON.stringify(recordset);
         });
     });
