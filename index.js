@@ -1,6 +1,7 @@
-const path = require('path');
-const express = require('express');
-const app = express();
+const path      = require('path');
+const express   = require('express');
+const conexion  = require('./conexion');   
+const app       = express();
 
 //SETTINGS
 app.set('port', process.env.PORT || 8080);
@@ -20,6 +21,7 @@ io.on('connection', (socket)=>{
     console.log('Nueva conexión con ID' + socket.id);
     socket.on('eze-test', (data)=>{
         console.log("Mi primer web socket es: " + data);
-        io.sockets.emit('escucho', 'fuck you');
+        consultita = recHit('Fac_Demo', 'SELECT * FROM Clients');
+        io.sockets.emit('escucho', consultita);
     });
 });

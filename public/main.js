@@ -1,5 +1,5 @@
 const socket = io();
 
 socket.on('escucho', (data)=>{
-    alert(data);
+    console.log(data);
 });
