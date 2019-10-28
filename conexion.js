@@ -19,6 +19,7 @@ function recHit(database, consultaSQL)
                 console.log(err);
             }
             sql.close();
+            console.log("Esta es la prueba de que SÍ entra a la función");
             return JSON.stringify(recordset);
         });
     });
