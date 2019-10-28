@@ -1,6 +1,7 @@
 var sql = require("mssql");
 function recHit(database, consultaSQL)
 {   
+    var aux = null;
     var config = {
         user: 'sa',
         password: 'LOperas93786',
@@ -18,11 +19,10 @@ function recHit(database, consultaSQL)
             {
                 console.log(err);
             }
+            aux = recordset;
             sql.close();
-            console.log("Esta es la prueba de que SÍ entra a la función");
-            console.log(recordset);
-            return JSON.stringify(recordset);
         });
     });
+    return aux;
 }
 module.exports.recHit = recHit;
