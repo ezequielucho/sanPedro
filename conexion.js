@@ -8,19 +8,19 @@ function recHit(database, consultaSQL)
         server: 'silema.hiterp.com',
         database: database
     };
-    sql.connect(config, (err)=>{
+    aux = sql.connect(config, (err)=>{
         if(err)
         {
             console.log(err);
         }
         var request = new sql.Request();
-        request.query(consultaSQL, (err, recordset)=>{
+        return request.query(consultaSQL, (err, recordset)=>{
             if(err)
             {
                 console.log(err);
             }
-            aux = recordset;
             sql.close();
+            return JSON.stringify(recordset);
         });
     });
     return aux;
