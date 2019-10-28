@@ -21,7 +21,8 @@ io.on('connection', (socket)=>{
     console.log('Nueva conexión con ID' + socket.id);
     socket.on('eze-test', (data)=>{
         console.log("Mi primer web socket es: " + data);
-        consultita = conexion.recHit('Fac_Demo', 'SELECT * FROM Clients');
-        io.sockets.emit('escucho', consultita);
+        consultita = conexion.recHit('Fac_Demo', 'SELECT * FROM Clients').then(function(res){
+            io.sockets.emit('escucho', res);
+        });
     });
 });
