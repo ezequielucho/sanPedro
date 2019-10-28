@@ -1,5 +1,5 @@
 var sql = require("mssql");
-function recHit(database, consultaSQL)
+function recHit(database, consultaSQL, io)
 {   
     var config = {
         user: 'sa',
@@ -7,19 +7,21 @@ function recHit(database, consultaSQL)
         server: 'silema.hiterp.com',
         database: database
     };
-    sql.connect(config, (err)=>{
+    sql.connect(config, (err)=>
+    {
         if(err)
         {
             console.log(err);
         }
         var request = new sql.Request();
-        request.query(consultaSQL, (err, recordset)=>{
+        request.query(consultaSQL, (err, recordset)=>
+        {
             if(err)
             {
                 console.log(err);
             }
             sql.close();
-            return JSON.stringify(recordset);
+            io.sockets.emit('escucho', JSON.stringify(recordset));
         });
     });
 }
