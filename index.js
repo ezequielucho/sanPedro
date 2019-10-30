@@ -23,7 +23,7 @@ io.on('connection', (socket)=>{
         conexion.recHit('Fac_Demo', 'SELECT * FROM Clients', io);
     });
     socket.on('install-licencia', (data)=>{
-        console.log(data.numLlicencia, data.password);
+        console.log(data.numLicencia, data.password);
         //conexion.recHit('Fac_Demo', '', io);
     });
 });
