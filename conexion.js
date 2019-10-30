@@ -21,7 +21,7 @@ function recHit(database, consultaSQL, io)
                 console.log(err);
             }
             sql.close();
-            io.sockets.emit('escucho', 'PUTA');//JSON.stringify(recordset));
+            io.sockets.emit('escucho', JSON.stringify(recordset));
         });
     });
 }
