@@ -20,7 +20,10 @@ const io = socketIO(server);
 io.on('connection', (socket)=>{
     console.log('Nueva conexión con ID' + socket.id);
     socket.on('eze-test', (data)=>{
-        console.log("Mi primer web socket es: " + data);
         conexion.recHit('Fac_Demo', 'SELECT * FROM Clients', io);
+    });
+    socket.on('install-licencia', (data)=>{
+        console.log(data.numLlicencia, data.password);
+        //conexion.recHit('Fac_Demo', '', io);
     });
 });
