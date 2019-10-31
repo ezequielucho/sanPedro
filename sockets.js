@@ -1,5 +1,5 @@
 
-function loadSockets(io, conexion)
+function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     io.on('connection', (socket)=>
     {    
@@ -11,12 +11,15 @@ function loadSockets(io, conexion)
         socket.on('install-licencia', (data)=>{
             if(data.password == 'LOperas93786')
             {
-                conexion.recHit('Hit', `SELECT * FROM llicencies WHERE Llicencia = ${data.numLicencia}`).then(function(data){
-                    socket.emit('test', data.recordset);
+                conexion.recHit('Hit', `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom WHERE ll.Llicencia = ${data.numLicencia}`).then(function(data){
+                    if(data.recordset === 1)
+                    {
+                        conexion.recHit(data.recordset.Db, 'SELECT * FROM Clients').then((res)=>{
+                            socket.emit('test', res).recordset;
+                        });
+                    }
                 });
             }
-            console.log(data.numLicencia, data.password);
-            //conexion.recHit('Fac_Demo', '', io);
         });
 
         /* OTRA */
