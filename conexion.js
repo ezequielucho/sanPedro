@@ -30,13 +30,13 @@ function recHit(database, consultaSQL, io)
 async function recHit(database, consultaSQL, io)
 {
     try{
-    await sql.ConnectionError(`mssql://sa:LOperas93786@silema.hiterp.com/${database}`);
-    var result = await sql.query`${consultaSQL}`;
-    return result;
+        await sql.connect('mssql://sa:LOperas93786@silema.hiterp.com/'+database)
+        const result = await sql.query`${consultaSQL}`
     }
     catch(err)
     {
         console.log("Gravito error");
     }
+    return result;
 }
 module.exports.recHit = recHit;
