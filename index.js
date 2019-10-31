@@ -26,7 +26,9 @@ io.on('connection', (socket)=>
     socket.on('install-licencia', (data)=>{
         if(data.password == 'LOperas93786')
         {
-            console.log(conexion.recHit('Hit', `SELECT * FROM llicencies WHERE Llicencia = ${data.numLicencia}`, io));
+            conexion.recHit('Hit', `SELECT * FROM llicencies WHERE Llicencia = ${data.numLicencia}`, io).then(function(data){
+                console.log(data);
+            });
             
         }
         console.log(data.numLicencia, data.password);
