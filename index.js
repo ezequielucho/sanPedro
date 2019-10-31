@@ -17,13 +17,16 @@ const server = app.listen(app.get('port'), () =>{
 const socketIO = require('socket.io');
 const io = socketIO(server);
 
-io.on('connection', (socket)=>{
-    console.log('Nueva conexión con ID' + socket.id);
+io.on('connection', (socket)=>
+{
     socket.on('eze-test', (data)=>{
         conexion.recHit('Fac_Demo', 'SELECT * FROM Clients', io);
     });
+
     socket.on('install-licencia', (data)=>{
         console.log(data.numLicencia, data.password);
         //conexion.recHit('Fac_Demo', '', io);
     });
+
+    //socket.on();
 });
