@@ -13,7 +13,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             {
                 conexion.recHit('Hit', `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom WHERE ll.Llicencia = ${data.numLicencia}`).then(function(data){
                     console.log(data.recordset.Db);
-                    socket.emit('test', res.recordset);
+                    socket.emit('test', data.recordset);
                     if(data.recordset === 1)
                     {
                         console.log("AQUI ENTRA");
