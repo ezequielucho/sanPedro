@@ -8,7 +8,7 @@ function loadSockets(socket, conexion)
     socket.on('install-licencia', (data)=>{
         if(data.password == 'LOperas93786')
         {
-            conexion.recHit('Hit', `SELECT * FROM llicencies WHERE Llicencia = ${data.numLicencia}`, io).then(function(data){
+            conexion.recHit('Hit', `SELECT * FROM llicencies WHERE Llicencia = ${data.numLicencia}`).then(function(data){
                 console.log(data);
             });
             
