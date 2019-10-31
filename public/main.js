@@ -7,4 +7,5 @@ socket.on('escucho', (data)=>{
 
 socket.on('test', (data)=>{
     test = data;
+    console.log(data);
 });
