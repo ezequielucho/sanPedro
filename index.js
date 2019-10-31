@@ -18,7 +18,4 @@ const server = app.listen(app.get('port'), () =>{
 const socketIO = require('socket.io');
 const io = socketIO(server);
 
-io.on('connection', (socket)=>
-{
-    modSocket.loadSockets(socket, conexion);
-});
+modSocket.loadSockets(io, conexion);
