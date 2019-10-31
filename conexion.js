@@ -1,4 +1,5 @@
 var sql = require("mssql");
+/*
 function recHit(database, consultaSQL, io)
 {   
     var config = {
@@ -24,5 +25,12 @@ function recHit(database, consultaSQL, io)
             io.sockets.emit('escucho', JSON.stringify(recordset));
         });
     });
+}
+*/
+async function recHit(database, consultaSQL, io)
+{
+    await sql.ConnectionError(`mssql://sa:LOperas93786@silema.hiterp.com/${database}`);
+    var result = await sql.query`${consultaSQL}`;
+    return result;
 }
 module.exports.recHit = recHit;
