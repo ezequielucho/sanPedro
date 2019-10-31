@@ -12,7 +12,7 @@ function loadSockets(io, conexion)
             if(data.password == 'LOperas93786')
             {
                 conexion.recHit('Hit', `SELECT * FROM llicencies WHERE Llicencia = ${data.numLicencia}`).then(function(data){
-                    console.log(data.recordsets.length);
+                    console.log(data.recordsets);
                 });
             }
             console.log(data.numLicencia, data.password);
