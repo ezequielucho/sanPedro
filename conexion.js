@@ -29,14 +29,15 @@ function recHit(database, consultaSQL, io)
 */
 async function recHit(database, consultaSQL, io)
 {
-    try{
-        await sql.connect('mssql://sa:LOperas93786@silema.hiterp.com/'+database)
-        const result = await sql.query`${consultaSQL}`
-    }
-    catch(err)
+    var config = 
     {
-        console.log("Gravito error");
-    }
-    return result;
+        user: 'sa',
+        password: 'LOperas93786',
+        server: 'silema.hiterp.com',
+        database: database
+    };
+    let pool = await sql.connect(config)
+    let result1 = await pool.request().query(consultaSQL);
+    return result1;
 }
 module.exports.recHit = recHit;
