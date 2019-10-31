@@ -27,7 +27,7 @@ function recHit(database, consultaSQL, io)
     });
 }
 */
-async function recHit(database, consultaSQL, io)
+async function recHit(database, consultaSQL) /*¡DEVUELVE UNA PROMESA!*/
 {
     var config = 
     {
@@ -37,7 +37,7 @@ async function recHit(database, consultaSQL, io)
         database: database
     };
     let pool = await sql.connect(config)
-    let result1 = await pool.request().query(consultaSQL);
-    return result1;
+    let result = await pool.request().query(consultaSQL);
+    return result;
 }
 module.exports.recHit = recHit;
