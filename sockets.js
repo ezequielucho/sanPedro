@@ -15,7 +15,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     if(data.recordset === 1)
                     {
                         conexion.recHit(data.recordset.Db, 'SELECT * FROM Clients').then((res)=>{
-                            socket.emit('test', res).recordset;
+                            socket.emit('test', res.recordset);
                         });
                     }
                 });
