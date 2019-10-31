@@ -1,7 +1,7 @@
 const path      = require('path');
 const express   = require('express');
 const conexion  = require('./conexion');  
-const sockets   = require('./sockets');  
+const modSocket = require('./sockets');
 const app       = express();
 
 //SETTINGS
@@ -17,3 +17,8 @@ const server = app.listen(app.get('port'), () =>{
 //WEBSOCKETS
 const socketIO = require('socket.io');
 const io = socketIO(server);
+
+io.on('connection', (socket)=>
+{
+    modSocket.loadSockets(socket);
+});

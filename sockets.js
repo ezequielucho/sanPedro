@@ -1,4 +1,5 @@
-io.on('connection', (socket)=>
+
+function loadSockets(socket)
 {
     socket.on('eze-test', (data)=>{
         conexion.recHit('Fac_Demo', 'SELECT * FROM Clients', io);
@@ -15,6 +16,5 @@ io.on('connection', (socket)=>
         console.log(data.numLicencia, data.password);
         //conexion.recHit('Fac_Demo', '', io);
     });
-
-    //socket.on();
-});
+}
+module.exports.loadSockets = loadSockets;

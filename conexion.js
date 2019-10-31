@@ -38,6 +38,7 @@ async function recHit(database, consultaSQL) /*¡DEVUELVE UNA PROMESA!*/
     };
     let pool = await sql.connect(config)
     let result = await pool.request().query(consultaSQL);
+    sql.close();
     return result;
 }
 module.exports.recHit = recHit;
