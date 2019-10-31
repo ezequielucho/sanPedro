@@ -34,7 +34,7 @@ async function recHit(database, consultaSQL, io)
     var result = await sql.query`${consultaSQL}`;
     return result;
     }
-    catch
+    catch(err)
     {
         console.log("Gravito error");
     }
