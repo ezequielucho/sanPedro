@@ -1,8 +1,8 @@
 
-function loadSockets(socket)
+function loadSockets(socket, conexion)
 {
     socket.on('eze-test', (data)=>{
-        conexion.recHit('Fac_Demo', 'SELECT * FROM Clients', io);
+        conexion.recHit('Fac_Demo', 'SELECT * FROM Clients');
     });
 
     socket.on('install-licencia', (data)=>{

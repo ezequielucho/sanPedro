@@ -20,5 +20,5 @@ const io = socketIO(server);
 
 io.on('connection', (socket)=>
 {
-    modSocket.loadSockets(socket);
+    modSocket.loadSockets(socket, conexion);
 });
