@@ -14,10 +14,24 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 conexion.recHit('Hit', `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom WHERE ll.Llicencia = ${data.numLicencia}`).then(function(data){
                     if(data.recordset.length === 1)
                     {
+                        /*
                         conexion.recHit(data.recordset[0].Db, 'SELECT * FROM Clients').then((res)=>{
                             socket.emit('test', res.recordset);
                         });
-                        socket.emit('install-licencia', {error: true, infoError: "El error es tu cabeza, puto"});
+                        */
+                       socket.emit('install-licencia', {
+                           licencia: parseInt(data.recordset[0].Llicencia), 
+                           nombreEmpresa: data.recordset[0].Empresa,
+                           database: data.recordset[0].Db,
+                           error: false
+                        });
+                    }
+                    else
+                    {
+                        socket.emit('install-licencia', {
+                            error: true,
+                            infoError: "No hay UN resultado con estos datos"
+                         });
                     }
                 });
             }
