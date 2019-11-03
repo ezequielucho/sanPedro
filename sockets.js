@@ -17,7 +17,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         conexion.recHit(data.recordset[0].Db, 'SELECT * FROM Clients').then((res)=>{
                             socket.emit('test', res.recordset);
                         });
-                        socket.emit('install-licencia', {error: false});
+                        socket.emit('install-licencia', {error: true, infoError: "El error es tu cabeza, puto"});
                     }
                 });
             }
