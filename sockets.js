@@ -35,6 +35,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     }
                 });
             }
+            else
+            {
+                socket.emit('install-licencia', {
+                    error: true,
+                    infoError: "Contraseña incorrecta"
+                 });
+            }
         });
 
         /* OTRA */
