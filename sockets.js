@@ -54,7 +54,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 {
                     let auxObject = {
                         error: false,
-                        recordset: data.recordset
+                        recordset: res.recordset
                     };
                     console.log("Voy a emitir esto: ", auxObject);
                     socket.emit('cargar-ultimo-teclado', auxObject);
