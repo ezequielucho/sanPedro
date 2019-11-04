@@ -45,6 +45,22 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         /* OTRA */
+        socket.on('cargar-ultimo-teclado', (data)=>{
+            conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((res)=>{
+                if(res)
+                {
+                    let auxObject = {
+                        error: false,
+                        recordset: data.recordset
+                    };
+                    socket.emit('cargar-ultimo-teclado', auxObject);
+                }
+                else
+                {
+                    socket.emit('cargar-ultimo-teclado', {error: true, infoError: "Error en la respuesta de la consulta SQL"});
+                }
+            });
+        });
     });
 }
 module.exports.loadSockets = loadSockets;
