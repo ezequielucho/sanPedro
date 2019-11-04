@@ -5,7 +5,9 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
     {    
         /* TEST */
         socket.on('eze-test', (data)=>{
-            conexion.recHit('Fac_Demo', 'SELECT * FROM Clients');
+            conexion.recHit('Fac_Demo', 'SELECT * FROM Clients').then(res=>{
+                console.log(res);
+            });
         });
         /* COMPROBAR E INSTALAR LICENCIA */
         socket.on('install-licencia', (data)=>{
