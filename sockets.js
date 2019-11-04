@@ -46,6 +46,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* OTRA */
         socket.on('cargar-ultimo-teclado', (data)=>{
+            console.log("Recibo petición ", data);
             conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((res)=>{
                 if(res)
                 {
@@ -53,6 +54,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         error: false,
                         recordset: data.recordset
                     };
+                    console.log("Voy a emitir esto: ", auxObject);
                     socket.emit('cargar-ultimo-teclado', auxObject);
                 }
                 else
