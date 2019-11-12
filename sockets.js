@@ -47,7 +47,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         /* OTRA */
-        socket.on('cargar-ultimo-teclado', (data)=>{
+        socket.on('cargar-todo', (data)=>{
             conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva FROM Articles').then(res2=>{
                 conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(res1=>{
                     if(res1)
@@ -61,17 +61,17 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                     teclas: res.recordset,
                                     articulos: res2.recordset
                                 };
-                                socket.emit('cargar-ultimo-teclado', auxObject);
+                                socket.emit('cargar-todo', auxObject);
                             }
                             else
                             {
-                                socket.emit('cargar-ultimo-teclado', {error: true, infoError: "Error en la respuesta de la consulta SQL"});
+                                socket.emit('cargar-todo', {error: true, infoError: "Error en la respuesta de la consulta SQL"});
                             }
                         });
                     }
                     else
                     {
-                        socket.emit('cargar-ultimo-teclado', {error: true, infoError: "Error en la respuesta de la consulta SQL 1"});
+                        socket.emit('cargar-todo', {error: true, infoError: "Error en la respuesta de la consulta SQL 1"});
                     }
                 });
             });
