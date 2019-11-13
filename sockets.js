@@ -55,7 +55,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((res)=>{
                             if(res)
                             {
-                                conexion.recHit(data.database, 'SELECT Codi as id, nom as nombreLargo, memo as nombreCorto FROM dependentes').then(res3=>{
+                                conexion.recHit(data.database, 'select Codi as idTrabajador, nom as nombre, memo as nombreCorto from dependentes').then(res3=>{
                                     if(res3)
                                     {
                                         let auxObject = {
