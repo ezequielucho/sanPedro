@@ -55,13 +55,23 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((res)=>{
                             if(res)
                             {
-                                let auxObject = {
-                                    error: false,
-                                    menus: res1.recordset,
-                                    teclas: res.recordset,
-                                    articulos: res2.recordset
-                                };
-                                socket.emit('cargar-todo', auxObject);
+                                conexion.recHit(data.database, 'SELECT Codi as id, nom as nombreLargo, memo as nombreCorto FROM dependentes').then(res3=>{
+                                    if(res3)
+                                    {
+                                        let auxObject = {
+                                            error: false,
+                                            menus: res1.recordset,
+                                            teclas: res.recordset,
+                                            articulos: res2.recordset,
+                                            dependentes: res3.recordset
+                                        };
+                                        socket.emit('cargar-todo', auxObject);
+                                    }
+                                    else
+                                    {
+                                        socket.emit('cargar-todo', {error: true, infoError: "Error en la respuesta de la consulta SQL 3"});
+                                    }
+                                });
                             }
                             else
                             {
