@@ -50,14 +50,22 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                             if (res) {
                                 conexion.recHit(data.database, 'select Codi as idTrabajador, nom as nombre, memo as nombreCorto from dependentes').then(res3 => {
                                     if (res3) {
-                                        let auxObject = {
-                                            error: false,
-                                            menus: res1.recordset,
-                                            teclas: res.recordset,
-                                            articulos: res2.recordset,
-                                            dependentes: res3.recordset
-                                        };
-                                        socket.emit('cargar-todo', auxObject);
+                                        conexion.recHit(data.database, 'SELECT Nom, Pare FROM Families WHERE Nivell > 0').then(res4 => {
+                                            if (res4) {
+                                                let auxObject = {
+                                                    error: false,
+                                                    menus: res1.recordset,
+                                                    teclas: res.recordset,
+                                                    articulos: res2.recordset,
+                                                    dependentes: res3.recordset,
+                                                    familias: res4.recordset
+                                                };
+                                                socket.emit('cargar-todo', auxObject);
+                                            }
+                                            else {
+                                                socket.emit('cargar-todo', { error: true, infoError: 'Error en la respuesta de la consulta 4' });
+                                            }
+                                        });
                                     }
                                     else {
                                         socket.emit('cargar-todo', { error: true, infoError: "Error en la respuesta de la consulta SQL 3" });
