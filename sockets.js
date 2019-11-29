@@ -50,7 +50,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                             if (res) {
                                 conexion.recHit(data.database, 'select Codi as idTrabajador, nom as nombre, memo as nombreCorto from dependentes').then(res3 => {
                                     if (res3) {
-                                        conexion.recHit(data.database, 'SELECT Nom, Pare FROM Families WHERE Nivell > 0').then(res4 => {
+                                        conexion.recHit(data.database, 'SELECT Nom as nombre, Pare as padre FROM Families WHERE Nivell > 0').then(res4 => {
                                             if (res4) {
                                                 let auxObject = {
                                                     error: false,
