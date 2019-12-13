@@ -21,6 +21,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "mssql": "^5.1.0",
+    "node-red-contrib-mssql": "0.0.7",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {}
