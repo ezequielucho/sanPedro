@@ -55,17 +55,25 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                                 let sqlPromos = `SELECT Id as id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`;// AND Df > GETDATE()`;
                                                 conexion.recHit(data.database, sqlPromos).then(res5 => {
                                                     if (res5) {
-                                                        let auxObject = {
-                                                            error: false,
-                                                            menus: res1.recordset,
-                                                            teclas: res.recordset,
-                                                            articulos: res2.recordset,
-                                                            dependentes: res3.recordset,
-                                                            familias: res4.recordset,
-                                                            promociones: res5.recordset,
-                                                            sql: sqlPromos
-                                                        };
-                                                        socket.emit('cargar-todo', auxObject);
+                                                        conexion.recHit(data.data, 'select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals').then(res6 => {
+                                                            if (res6) {
+                                                                let auxObject = {
+                                                                    error: false,
+                                                                    menus: res1.recordset,
+                                                                    teclas: res.recordset,
+                                                                    articulos: res2.recordset,
+                                                                    dependentes: res3.recordset,
+                                                                    familias: res4.recordset,
+                                                                    promociones: res5.recordset,
+                                                                    clientes: res6.recordset,
+                                                                    sql: sqlPromos
+                                                                };
+                                                                socket.emit('cargar-todo', auxObject);
+                                                            }
+                                                            else {
+                                                                socket.emit('cargar-todo', { error: true, infoError: "Error en la respuesta de la consulta SQL 6" });
+                                                            }
+                                                        });
                                                     }
                                                     else {
                                                         socket.emit('cargar-todo', { error: true, infoError: "Error en la respuesta de la consulta SQL 5" });
