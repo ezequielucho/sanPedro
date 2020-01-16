@@ -55,7 +55,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                                 let sqlPromos = `SELECT Id as id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`;// AND Df > GETDATE()`;
                                                 conexion.recHit(data.database, sqlPromos).then(res5 => {
                                                     if (res5) {
-                                                        conexion.recHit(data.database, 'select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals').then(res6 => {
+                                                        conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(res6 => {
                                                             if (res6) {
                                                                 let auxObject = {
                                                                     error: false,
