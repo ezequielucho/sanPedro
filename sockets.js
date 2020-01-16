@@ -65,7 +65,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                                                     dependentes: res3.recordset,
                                                                     familias: res4.recordset,
                                                                     promociones: res5.recordset,
-                                                                    clientes: res6.recordset,
+                                                                    clientes: "lolaso",//res6.recordset,
                                                                     sql: sqlPromos
                                                                 };
                                                                 socket.emit('cargar-todo', auxObject);
