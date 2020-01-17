@@ -64,6 +64,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia FROM Articles').then(res2 => {
                         conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${codigoCliente}) AND TarifaCodi <> 0`).then(res7 => {
                             if (res7) {
+                                console.log("Entra en if(res7)");
                                 if (res7.recordset.length > 0) {
                                     res2.recordset = configurarTarifasEspeciales(res2.recordset, res7.recordset);
                                 }
