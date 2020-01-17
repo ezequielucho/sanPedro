@@ -10,7 +10,6 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
             }
         }
     }
-
     return articulos;
 }
 
@@ -59,6 +58,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* OTRA */
         socket.on('cargar-todo', (data) => {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
+                let codigoCliente = res8.recordset[0].codigoCliente;
                 if (res8) {
                     conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia FROM Articles').then(res2 => {
                         conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${codigoCliente}) AND TarifaCodi <> 0`).then(res7 => {
