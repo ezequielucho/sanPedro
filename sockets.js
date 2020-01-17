@@ -1,9 +1,8 @@
 
 function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
-    console.log(arrayTarifasEspeciales);
     if (arrayTarifasEspeciales.length > 0) /* APLICAR TARIFAS ESPECIALES */ {
-        for (let i = 0; i < arrayTarifasEspeciales; i++) {
-            for (let j = 0; j < articulos; j++) {
+        for (let i = 0; i < arrayTarifasEspeciales.length; i++) {
+            for (let j = 0; j < articulos.length; j++) {
                 if (articulos[j].id === arrayTarifasEspeciales[i].id) {
                     articulos[j].precioConIva = arrayTarifasEspeciales[i].precioConIva;
                     console.log("HA CAMBIADO UN PRECIO");
