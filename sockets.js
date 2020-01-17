@@ -60,8 +60,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('cargar-todo', (data) => {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
                 let codigoCliente = res8.recordset.codigoCliente;
+                console.log("Codigo cliente var = " + codigoCliente);
                 if (res8) {
                     conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia FROM Articles').then(res2 => {
+                        console.log("codigoCliente dentro de promesas = " + codigoCliente);
                         conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${codigoCliente}) AND TarifaCodi <> 0`).then(res7 => {
                             if (res7) {
                                 console.log("Entra en if(res7)");
