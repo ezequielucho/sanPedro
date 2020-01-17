@@ -10,6 +10,7 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
             }
         }
     }
+    console.log(articulos)
     return articulos;
 }
 
@@ -126,7 +127,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                 socket.emit('cargar-todo', { error: true, infoError: "Error en la respuesta de la consulta SQL 7" });
                             }
                         });
-
                     });
                 }
                 else {
