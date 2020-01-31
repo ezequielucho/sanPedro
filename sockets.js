@@ -26,25 +26,23 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('install-licencia', (data) => {
             if (data.password == 'LOperas93786') {
                 conexion.recHit('Hit', `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom WHERE ll.Llicencia = ${data.numLicencia}`).then(function (data) {
-                    if (data.recordset.length === 1) {
-                        /*
-                        conexion.recHit(data.recordset[0].Db, 'SELECT * FROM Clients').then((res)=>{
-                            socket.emit('test', res.recordset);
-                        });
-                        */
-                        socket.emit('install-licencia', {
-                            licencia: parseInt(data.recordset[0].Llicencia),
-                            nombreEmpresa: data.recordset[0].Empresa,
-                            database: data.recordset[0].Db,
-                            error: false
-                        });
-                    }
-                    else {
-                        socket.emit('install-licencia', {
-                            error: true,
-                            infoError: "No hay UN resultado con estos datos"
-                        });
-                    }
+                    conexion.recHit(data.recordset[0].Db, `SELECT Nom FROM clients WHERE Codi = (SELECT Valor1 FROM ParamsHw WHERE Codi = ${data.recordset[0].Llicencia})`).then(data2 => {
+                        if (data.recordset.length === 1) {
+                            socket.emit('install-licencia', {
+                                licencia: parseInt(data.recordset[0].Llicencia),
+                                nombreEmpresa: data.recordset[0].Empresa,
+                                database: data.recordset[0].Db,
+                                error: false,
+                                nombreTienda: data2.recordset[0].Nom
+                            });
+                        }
+                        else {
+                            socket.emit('install-licencia', {
+                                error: true,
+                                infoError: "No hay UN resultado con estos datos"
+                            });
+                        }
+                    });
                 });
             }
             else {
