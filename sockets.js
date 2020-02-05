@@ -75,24 +75,27 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                                                 let sqlPromos = `SELECT Id as id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`;// AND Df > GETDATE()`;
                                                                 conexion.recHit(data.database, sqlPromos).then(res5 => {
                                                                     if (res5) {
-                                                                        conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(res6 => {
-                                                                            if (res6) {
-                                                                                let auxObject = {
-                                                                                    error: false,
-                                                                                    menus: res1.recordset,
-                                                                                    teclas: res.recordset,
-                                                                                    articulos: res2.recordset,
-                                                                                    dependentes: res3.recordset,
-                                                                                    familias: res4.recordset,
-                                                                                    promociones: res5.recordset,
-                                                                                    clientes: res6.recordset,
-                                                                                    sql: sqlPromos
-                                                                                };
-                                                                                socket.emit('cargar-todo', auxObject);
-                                                                            }
-                                                                            else {
-                                                                                socket.emit('cargar-todo', { error: true, infoError: "Error en la respuesta de la consulta SQL 6" });
-                                                                            }
+                                                                        conexion.recHit(data.database, `select Variable AS nombreDato, Valor AS valorDato from paramsTpv where CodiClient = 819 AND (Variable = 'Capselera_1' OR Variable = 'Capselera_2')`).then(res10 => {
+                                                                            console.log("EL NOMBRE DEL CLIENTE PUEDE LLEGAR COMO: " + codigoCliente);
+                                                                            conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(res6 => {
+                                                                                if (res6) {
+                                                                                    let auxObject = {
+                                                                                        error: false,
+                                                                                        menus: res1.recordset,
+                                                                                        teclas: res.recordset,
+                                                                                        articulos: res2.recordset,
+                                                                                        dependentes: res3.recordset,
+                                                                                        familias: res4.recordset,
+                                                                                        promociones: res5.recordset,
+                                                                                        clientes: res6.recordset,
+                                                                                        sql: sqlPromos
+                                                                                    };
+                                                                                    socket.emit('cargar-todo', auxObject);
+                                                                                }
+                                                                                else {
+                                                                                    socket.emit('cargar-todo', { error: true, infoError: "Error en la respuesta de la consulta SQL 6" });
+                                                                                }
+                                                                            });
                                                                         });
                                                                     }
                                                                     else {
