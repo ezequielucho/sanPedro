@@ -18,7 +18,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
-            conexion.recHit('Fac_Demo', 'SELECT * FROM Clients').then(res => {
+            conexion.recHit('Fac_', 'SELECT * FROM Clients').then(res => {
                 console.log(res);
             });
         });
@@ -27,7 +27,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             let sql = `INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 60, 34, 1234, 0);
             INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 61, 34, 1234, 0);
             INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 62, 34, 1234, 0);`;
-            conexion.recHit(data.database, sql).then(res => {
+            conexion.recHit("Fac_Tena", sql).then(res => {
                 console.log(res);
             });
 
