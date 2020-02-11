@@ -24,10 +24,14 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* GUARDAR TICKET */
         socket.on('guardar-ticket', (data) => {
-            // conexion.recHit(data.database, 'SELECT * FROM Clients').then(res => {
-            //     console.log(res);
-            // });
-            console.log(data);
+            let sql = `INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 2, 34, 1234, 0)
+            INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 3, 34, 1234, 0)
+            INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 4, 34, 1234, 0)`;
+            conexion.recHit(data.database, 'SELECT * FROM Clients').then(res => {
+                console.log(res);
+            });
+
+            //console.log(data);
         });
         /* FIN GUARDAR TICKET */
         /* COMPROBAR E INSTALAR LICENCIA */
