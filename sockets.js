@@ -22,18 +22,26 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 console.log(res);
             });
         });
+        /* GUARDAR TICKET */
+        socket.on('guardar-ticket', (data) => {
+            conexion.recHit(data.database, 'SELECT * FROM Clients').then(res => {
+                console.log(res);
+            });
+        });
+        /* FIN GUARDAR TICKET */
         /* COMPROBAR E INSTALAR LICENCIA */
         socket.on('install-licencia', (data) => {
             if (data.password == 'LOperas93786') {
                 conexion.recHit('Hit', `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom WHERE ll.Llicencia = ${data.numLicencia}`).then(function (data) {
-                    conexion.recHit(data.recordset[0].Db, `SELECT Nom FROM clients WHERE Codi = (SELECT Valor1 FROM ParamsHw WHERE Codi = ${data.recordset[0].Llicencia})`).then(data2 => {
+                    conexion.recHit(data.recordset[0].Db, `SELECT Nom, Codi as codigoTienda FROM clients WHERE Codi = (SELECT Valor1 FROM ParamsHw WHERE Codi = ${data.recordset[0].Llicencia})`).then(data2 => {
                         if (data.recordset.length === 1) {
                             socket.emit('install-licencia', {
                                 licencia: parseInt(data.recordset[0].Llicencia),
                                 nombreEmpresa: data.recordset[0].Empresa,
                                 database: data.recordset[0].Db,
                                 error: false,
-                                nombreTienda: data2.recordset[0].Nom
+                                nombreTienda: data2.recordset[0].Nom,
+                                codigoTienda: data2.recordset[0].codigoTienda
                             });
                         }
                         else {
