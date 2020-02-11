@@ -24,9 +24,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* GUARDAR TICKET */
         socket.on('guardar-ticket', (data) => {
-            conexion.recHit(data.database, 'SELECT * FROM Clients').then(res => {
-                console.log(res);
-            });
+            // conexion.recHit(data.database, 'SELECT * FROM Clients').then(res => {
+            //     console.log(res);
+            // });
+            console.log(data);
         });
         /* FIN GUARDAR TICKET */
         /* COMPROBAR E INSTALAR LICENCIA */
