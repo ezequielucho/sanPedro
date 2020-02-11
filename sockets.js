@@ -24,9 +24,9 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* GUARDAR TICKET */
         socket.on('guardar-ticket', (data) => {
-            let sql = `INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 2, 34, 1234, 0)
-            INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 3, 34, 1234, 0)
-            INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 4, 34, 1234, 0)`;
+            let sql = `INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 60, 34, 1234, 0);
+            INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 61, 34, 1234, 0);
+            INSERT INTO dba_tickets (fecha, numTicket, importe, idEmpleado, estado) VALUES (GETDATE(), 62, 34, 1234, 0);`;
             conexion.recHit(data.database, sql).then(res => {
                 console.log(res);
             });
