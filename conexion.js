@@ -31,6 +31,7 @@ function recHit(database, consultaSQL) {
             sql.close();
         }).catch(err => {
             console.log(err);
+            console.log("SQL: ", consultaSQL)
             sql.close();
         });
     });
