@@ -29,16 +29,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 sql += `INSERT INTO ${data.nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.codigoTienda}, CONVERT(datetime, '${data.fecha}', 127), ${data.idDependienta}, ${data.idTicket}, '', ${data.cesta[i].idArticulo}, ${data.cesta[i].unidades}, ${data.cesta[i].subtotal}, '${data.tipoVenta}', 0, '');`;
             }
             conexion.recHit(data.database, sql).then(res => {
-                if (res) {
-                    console.log(res);
-                }
-                else {
-                    console.log("No se ha hecho nada ", res);
-                }
-                console.log('Ticket guardado');
+                socket.emit('confirmarEnvioTicket', {
+                    idTicket: data.idTicket,
+                    respuestaSql: res
+                });
             });
-
-            console.log(data);
         });
         /* FIN GUARDAR TICKET */
         /* COMPROBAR E INSTALAR LICENCIA */
