@@ -28,10 +28,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             for (let i = 0; i < data.cesta.length; i++) {
                 sql += `INSERT INTO ${data.nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.codigoTienda}, CONVERT(datetime, '${data.fecha}', 127), ${data.idDependienta}, ${data.idTicket}, '', ${data.cesta[i].idArticulo}, ${data.cesta[i].unidades}, ${data.cesta[i].subtotal}, '${data.tipoVenta}', 0, '');`;
             }
+
             conexion.recHit(data.database, sql).then(res => {
-                socket.emit('confirmarEnvioTicket', {
-                    idTicket: data.idTicket,
-                    respuestaSql: res
+                conexion.recHit('Hit', `INSERT INTO tocGame_idTickets (licencia, bbdd, ultimoIdTicket) VALUES (${data.licencia}, ${data.database}, ${data.idTicket})`).then(res2 => {
+                    socket.emit('confirmarEnvioTicket', {
+                        idTicket: data.idTicket,
+                        respuestaSql: res
+                    });
                 });
             });
         });
