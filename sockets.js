@@ -30,7 +30,15 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             }
 
             conexion.recHit(data.database, sql).then(res => {
-                conexion.recHit('Hit', `INSERT INTO tocGame_idTickets (licencia, bbdd, ultimoIdTicket) VALUES (${data.licencia}, ${data.database}, ${data.idTicket})`).then(res2 => {
+                let sql2 = `IF EXISTS (SELECT * FROM tocGame_idTickets WHERE licencia = ${data.licencia}) 
+                            BEGIN
+                            UPDATE tocGame_idTickets SET ultimoIdTicket = ${data.idTicket} WHERE licencia = ${data.licencia}
+                            END
+                            ELSE
+                            BEGIN
+                                INSERT INTO tocGame_idTickets (licencia, bbdd, ultimoIdTicket) VALUES (${data.licencia}, '${data.database}', ${data.idTicket})
+                            END`;
+                conexion.recHit('Hit', sql2).then(res2 => {
                     socket.emit('confirmarEnvioTicket', {
                         idTicket: data.idTicket,
                         respuestaSql: res
