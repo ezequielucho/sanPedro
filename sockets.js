@@ -46,6 +46,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 });
             });
         });
+
         /* FIN GUARDAR TICKET */
         /* COMPROBAR E INSTALAR LICENCIA */
         socket.on('install-licencia', (data) => {
