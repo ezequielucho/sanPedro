@@ -61,7 +61,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                 error: false,
                                 nombreTienda: data2.recordset[0].Nom,
                                 codigoTienda: data2.recordset[0].codigoTienda,
-                                ultimoTicket: data.recordset[0].ultimoTicket
+                                ultimoTicket: data.recordset[0].ultimoIdTicket
                             });
                         }
                         else {
