@@ -26,7 +26,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('guardar-ticket', (data) => {
             let sql = '';
             for (let i = 0; i < data.cesta.length; i++) {
-                sql += `INSERT INTO ${data.nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.codigoTienda}, CONVERT(datetime, '${data.fecha}', 127), ${data.idDependienta}, ${data.idTicket}, '', ${data.cesta[i].idArticulo}, ${data.cesta[i].unidades}, ${data.cesta[i].subtotal}, '${data.tipoVenta}', 0, '');`;
+                sql += `INSERT INTO ${data.nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.codigoTienda}, CONVERT(datetime, '${data.fecha}', 120), ${data.idDependienta}, ${data.idTicket}, '', ${data.cesta[i].idArticulo}, ${data.cesta[i].unidades}, ${data.cesta[i].subtotal}, '${data.tipoVenta}', 0, '');`;
             }
 
             conexion.recHit(data.database, sql).then(res => {
@@ -48,6 +48,12 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         /* FIN GUARDAR TICKET */
+        /* GUARDAR CAJAS */
+        socket.on('guardar-caja', (data) => {
+
+        });
+
+        /* FIN GUARDAR CAJAS */
         /* COMPROBAR E INSTALAR LICENCIA */
         socket.on('install-licencia', (data) => {
             if (data.password == 'LOperas93786') {
