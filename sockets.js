@@ -108,7 +108,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 let sqlW = '';
                 let sqlWi = '';
                 let sqlO = '';
-                let nombreTabla = '[V_Moviments_' + finalYear + '-' + finalMonth;
+                let nombreTabla = '[V_Moviments_' + finalYear + '-' + finalMonth + ']';
 
                 sqlZGJ = `
                             INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'Z', ${sumaEfectivoTarjetaTotal}, '');
