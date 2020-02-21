@@ -51,19 +51,22 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* GUARDAR CAJAS */
         socket.on('guardar-caja', (data) => {
             for (let i = 0; i < data.arrayCajas.length; i++) {
-                let finalYear = `${data.arrayCajas[i].finalTime.getFullYear()}`;
-                let finalMonth = `${data.arrayCajas[i].finalTime.getMonth() + 1}`;
-                let finalDay = `${data.arrayCajas[i].finalTime.getDate()}`;
-                let finalHours = `${data.arrayCajas[i].finalTime.getHours()}`;
-                let finalMinutes = `${data.arrayCajas[i].finalTime.getMinutes()}`;
-                let finalSeconds = `${data.arrayCajas[i].finalTime.getSeconds()}`;
+                let fechaFinal = new Date(data.arrayCajas[i].finalTime);
+                let fechaInicio = new Date(data.arrayCajas[i].inicioTime);
 
-                let inicioYear = `${data.arrayCajas[i].inicioTime.getFullYear()}`;
-                let inicioMonth = `${data.arrayCajas[i].inicioTime.getMonth() + 1}`;
-                let inicioDay = `${data.arrayCajas[i].inicioTime.getDate()}`;
-                let inicioHours = `${data.arrayCajas[i].inicioTime.getHours()}`;
-                let inicioMinutes = `${data.arrayCajas[i].inicioTime.getMinutes()}`;
-                let inicioSeconds = `${data.arrayCajas[i].inicioTime.getSeconds()}`;
+                let finalYear = `${fechaFinal.getFullYear()}`;
+                let finalMonth = `${fechaFinal.getMonth() + 1}`;
+                let finalDay = `${fechaFinal.getDate()}`;
+                let finalHours = `${fechaFinal.getHours()}`;
+                let finalMinutes = `${fechaFinal.getMinutes()}`;
+                let finalSeconds = `${fechaFinal.getSeconds()}`;
+
+                let inicioYear = `${fechaInicio.getFullYear()}`;
+                let inicioMonth = `${fechaInicio.getMonth() + 1}`;
+                let inicioDay = `${fechaInicio.getDate()}`;
+                let inicioHours = `${fechaInicio.getHours()}`;
+                let inicioMinutes = `${fechaInicio.getMinutes()}`;
+                let inicioSeconds = `${fechaInicio.getSeconds()}`;
 
                 let sumaEfectivoTarjetaTotal = data.arrayCajas[i].recaudado - data.arrayCajas[i].descuadre;
                 let descuadre = data.arrayCajas[i].descuadre;
