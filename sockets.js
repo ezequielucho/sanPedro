@@ -79,7 +79,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 }
                 let nombreTabla = '[V_Moviments_' + year + '-' + month + ']';
 
-                sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayMovimientos[i].idTrabajador}, 'O', ${data.arrayMovimientos[i].valor}, '${data.arrayMovimientos[i].concepto}');`;
+                sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayMovimientos[i].idTrabajador}, 'O', ${data.arrayMovimientos[i].valor}, '${data.arrayMovimientos[i].concepto}');`;
 
                 conexion.recHit(data.database, sql).then(res2 => {
                     socket.emit('confirmarEnvioMovimiento', {
@@ -88,6 +88,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     });
                 });
             }
+            console.log(sql);
         });
         /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) */
 
