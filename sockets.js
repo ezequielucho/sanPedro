@@ -47,6 +47,48 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             });
         });
 
+        /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) */
+        socket.on('guardar-movimientos', (data) => {
+            let sql = '';
+
+            for (let i = 0; i < data.arrayMovimientos.length; i++) {
+                let fecha = new Date(data.arrayMovimientos[i].timestamp);
+                let year = `${fecha.getFullYear()}`;
+                let month = `${fecha.getMonth() + 1}`;
+                let day = `${fecha.getDate()}`;
+                let hours = `${fecha.getHours()}`;
+                let minutes = `${fecha.getMinutes()}`;
+                let seconds = `${fecha.getSeconds()}`;
+
+                if (month.length === 1) {
+                    month = '0' + month;
+                }
+                if (day.length === 1) {
+                    day = '0' + day;
+                }
+                if (hours.length === 1) {
+                    hours = '0' + hours;
+                }
+                if (minutes.length === 1) {
+                    minutes = '0' + minutes;
+                }
+                if (seconds.length === 1) {
+                    seconds = '0' + seconds;
+                }
+                let nombreTabla = '[V_Moviments_' + finalYear + '-' + finalMonth + ']';
+
+                sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayMovimientos[i].idTrabajador}, 'O', ${data.arrayMovimientos[i].valor}, '${data.arrayMovimientos[i].concepto}');`;
+
+                conexion.recHit(data.database, sql).then(res2 => {
+                    socket.emit('confirmarEnvioMovimiento', {
+                        idMovimiento: data.arrayMovimientos[i].id,
+                        respuestaSql: res2
+                    });
+                });
+            }
+        });
+        /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) */
+
         /* FIN GUARDAR TICKET */
         /* GUARDAR CAJAS */
         socket.on('guardar-caja', (data) => {
