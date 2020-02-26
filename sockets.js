@@ -77,7 +77,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 if (seconds.length === 1) {
                     seconds = '0' + seconds;
                 }
-                let nombreTabla = '[V_Moviments_' + finalYear + '-' + finalMonth + ']';
+                let nombreTabla = '[V_Moviments_' + year + '-' + month + ']';
 
                 sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayMovimientos[i].idTrabajador}, 'O', ${data.arrayMovimientos[i].valor}, '${data.arrayMovimientos[i].concepto}');`;
 
