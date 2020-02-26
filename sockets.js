@@ -49,9 +49,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) */
         socket.on('guardar-movimientos', (data) => {
+            console.log('Traza 1');
             let sql = '';
 
             for (let i = 0; i < data.arrayMovimientos.length; i++) {
+                console.log('Traza 2');
                 let fecha = new Date(data.arrayMovimientos[i].timestamp);
                 let year = `${fecha.getFullYear()}`;
                 let month = `${fecha.getMonth() + 1}`;
