@@ -22,6 +22,47 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 console.log(res);
             });
         });
+        /* GUARDAR FICHAJES */
+        socket.on('guardarFichajes', (data) => {
+            var fechaEntrada = new Date(data.infoFichaje.fecha);
+            let year = `${fechaEntrada.getFullYear()}`;
+            let month = `${fechaEntrada.getMonth() + 1}`;
+            let day = `${fechaEntrada.getDate()}`;
+            let hours = `${fechaEntrada.getHours()}`;
+            let minutes = `${fechaEntrada.getMinutes()}`;
+            let seconds = `${fechaEntrada.getSeconds()}`;
+
+            if (month.length === 1) {
+                month = '0' + month;
+            }
+            if (day.length === 1) {
+                day = '0' + day;
+            }
+            if (hours.length === 1) {
+                hours = '0' + hours;
+            }
+            if (minutes.length === 1) {
+                minutes = '0' + minutes;
+            }
+            if (seconds.length === 1) {
+                seconds = '0' + seconds;
+            }
+            if (data.tipo === 'ENTRADA') {
+
+                let sqlEntrada = `INSERT INTO cdpDadesFichador (id, tmst, accio, usuari, idr, lloc, comentari) VALUES (0, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), 1, ${data.infoFichaje.idTrabajador}, NEWID(), ${data.idTienda}, '${data.nombreTienda}')`;
+                conexion.recHit(data.database, sqlEntrada).then(res => {
+                    console.log(res);
+                });
+            }
+            else {
+                if (data.tipo === 'SALIDA') {
+                    let sqlSalida = `INSERT INTO cdpDadesFichador (id, tmst, accio, usuari, idr, lloc, comentari) VALUES (0, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), 2, ${data.infoFichaje.idTrabajador}, NEWID(), ${data.idTienda}, '${data.nombreTienda}')`;
+                    conexion.recHit(data.database, sqlSalida).then(res => {
+                        console.log(res);
+                    });
+                }
+            }
+        });
         /* GUARDAR TICKET */
         socket.on('guardar-ticket', (data) => {
             let sql = '';
