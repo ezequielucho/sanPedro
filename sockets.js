@@ -24,7 +24,8 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* GUARDAR FICHAJES */
         socket.on('guardarFichajes', (data) => {
-            var fechaEntrada = new Date(data.infoFichaje.fecha);
+            var fechaEntrada = new Date(data.infoFichaje.fecha.year, data.infoFichaje.fecha.month, data.infoFichaje.fecha.day, data.infoFichaje.fecha.hours, data.infoFichaje.fecha.minutes, data.infoFichaje.fecha.seconds);
+
             let year = `${fechaEntrada.getFullYear()}`;
             let month = `${fechaEntrada.getMonth() + 1}`;
             let day = `${fechaEntrada.getDate()}`;
