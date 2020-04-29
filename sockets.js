@@ -91,8 +91,15 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* GUARDAR TICKET */
         socket.on('guardar-ticket', (data) => {
             let sql = '';
+            let campoOtros = '';
             for (let i = 0; i < data.cesta.length; i++) {
-                sql += `INSERT INTO ${data.nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.codigoTienda}, CONVERT(datetime, '${data.fecha}', 120), ${data.idDependienta}, ${data.idTicket}, '', ${data.cesta[i].idArticulo}, ${data.cesta[i].unidades}, ${data.cesta[i].subtotal}, '${data.tipoVenta}', 0, '');`;
+                if (data.cesta[i].tarjeta) {
+                    campoOtros = '[Visa]';
+                }
+                else {
+                    campoOtros = '';
+                }
+                sql += `INSERT INTO ${data.nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.codigoTienda}, CONVERT(datetime, '${data.fecha}', 120), ${data.idDependienta}, ${data.idTicket}, '', ${data.cesta[i].idArticulo}, ${data.cesta[i].unidades}, ${data.cesta[i].subtotal}, '${data.tipoVenta}', 0, '${campoOtros}');`;
             }
 
             conexion.recHit(data.database, sql).then(res => {
