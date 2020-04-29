@@ -93,7 +93,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             let sql = '';
             let campoOtros = '';
             for (let i = 0; i < data.cesta.length; i++) {
-                if (data.cesta[i].tarjeta) {
+                if (data.tarjeta) {
                     campoOtros = '[Visa]';
                 }
                 else {
