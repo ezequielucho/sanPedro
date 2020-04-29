@@ -23,12 +23,12 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 DECLARE @ultimaFecha datetime
                 DECLARE @ultimaFechaApuntada datetime
                 SELECT @ultimaFecha = MAX(Fecha) FROM GDT_StPedro WHERE tipo = 'Articles' and Empresa = 'Fac_Tena'
-                IF EXISTS (SELECT * FROM ultimasSanpedro WHERE licencia = 819 and tipo = 'Articles') 
+                IF EXISTS (SELECT * FROM ultimasSanpedro WHERE licencia = 819 and Articulos IS NOT NULL) 
                 BEGIN
-                    SELECT @ultimaFechaApuntada = articulos FROM ultimasSanpedro WHERE licencia = 819 and tipo = 'Articles'
+                    SELECT @ultimaFechaApuntada = articulos FROM ultimasSanpedro WHERE licencia = 819
                     IF @ultimaFecha > @ultimaFechaApuntada
                     BEGIN
-                        UPDATE ultimasSanpedro SET articulos = GETDATE() WHERE licencia = 819 and tipo = 'Articles'
+                        UPDATE ultimasSanpedro SET articulos = GETDATE() WHERE licencia = 819
                         SELECT 'Hay que actualizar' as resultado
                     END
                     ELSE
@@ -38,8 +38,15 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 END
                 ELSE
                 BEGIN
-                    INSERT INTO ultimasSanpedro (empresa, tipo, licencia, articulos) VALUES ('Fac_Tena', 'Articles', 819, @ultimaFecha)
-                    SELECT 'Hay que actualizar' as resultado
+					IF EXISTS (SELECT * FROM ultimasSanpedro WHERE licencia = 819)
+					BEGIN
+						UPDATE ultimasSanpedro SET articulos = @ultimaFecha WHERE licencia = 819
+					END
+					ELSE
+					BEGIN
+						INSERT INTO ultimasSanpedro (empresa, licencia, articulos) VALUES ('Fac_Tena', 819, @ultimaFecha)
+					END
+					SELECT 'Hay que actualizar' as resultado
                 END
             `;
             conexion.recHit('Hit', testSQL).then(res => {
@@ -313,6 +320,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             }
         });
 
+        /* DESCARGAR ARTÍCULOS */
+        socket.on('descargar-articulos', (data) => {
+            conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => {
+                socket.emit('descargar-articulos', resSQL.recordset);
+            });
+        });
+        /* FIN DESCARGAR ARTÍCULOS*/
         /* OTRA */
         socket.on('cargar-todo', (data) => {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
