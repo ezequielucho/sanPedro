@@ -18,8 +18,14 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
-            conexion.recHit('Fac_', 'SELECT * FROM Clients').then(res => {
-                console.log(res);
+            var testSQL =
+                `
+                DECLARE @ultimaFecha datetime
+                select @ultimaFecha = MAX(Fecha) FROM GDT_StPedro WHERE tipo = 'Articles' and Empresa = 'Fac_Tena'
+                SELECT @ultimaFecha as testiandoWey
+            `;
+            conexion.recHit('Hit', testSQL).then(res => {
+                console.log('La última fecha es: ', res);
             });
         });
         /* GUARDAR FICHAJES */
