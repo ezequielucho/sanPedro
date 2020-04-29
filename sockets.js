@@ -21,8 +21,26 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             var testSQL =
                 `
                 DECLARE @ultimaFecha datetime
-                select @ultimaFecha = MAX(Fecha) FROM GDT_StPedro WHERE tipo = 'Articles' and Empresa = 'Fac_Tena'
-                SELECT @ultimaFecha as testiandoWey
+                DECLARE @ultimaFechaApuntada datetime
+                SELECT @ultimaFecha = MAX(Fecha) FROM GDT_StPedro WHERE tipo = 'Articles' and Empresa = 'Fac_Tena'
+                IF EXISTS (SELECT * FROM ultimasSanpedro WHERE licencia = 819 and tipo = 'Articles') 
+                BEGIN
+                    SELECT @ultimaFechaApuntada = articulos FROM ultimasSanpedro WHERE licencia = 819 and tipo = 'Articles'
+                    IF @ultimaFecha > @ultimaFechaApuntada
+                    BEGIN
+                        UPDATE ultimasSanpedro SET articulos = GETDATE() WHERE licencia = 819 and tipo = 'Articles'
+                        SELECT 'Hay que actualizar' as resultado
+                    END
+                    ELSE
+                    BEGIN
+                        SELECT 'Nada que hacer' as resultado
+                    END
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO ultimasSanpedro (empresa, tipo, licencia, articulos) VALUES ('Fac_Tena', 'Articles', 819, @ultimaFecha)
+                    SELECT 'Hay que actualizar' as resultado
+                END
             `;
             conexion.recHit('Hit', testSQL).then(res => {
                 console.log('La última fecha es: ', res);
