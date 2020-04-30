@@ -424,14 +424,28 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* FIN DESCARGAR FAMILIAS */
 
-        /* DESCARGAR MENUS */
-        socket.on('descargar-menus', (data) => 
+        /* DESCARGAR TECLADO */
+        socket.on('descargar-teclado', (data) => 
         {
-            conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resSQL =>
+            conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resMenus =>
             {
-                if (resSQL) 
+                if (resMenus) 
                 {
-                    socket.emit('descargar-menus', resSQL.recordset);
+                    conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((resTeclas) => 
+                    {
+                        if(resTeclas)
+                        {
+                            let objAux = {
+                                menus: resMenus.recordset,
+                                teclas: resTeclas.recordset
+                            }
+                            socket.emit('descargar-teclado', objAux);
+                        }
+                        else
+                        {
+                            socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
+                        }
+                    });
 
                 }
                 else 
@@ -440,7 +454,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 }
             });
         });
-        /* FIN DESCARGAR MENUS */
+        /* FIN DESCARGAR TECLADO */
 
         /* OTRA */
         socket.on('cargar-todo', (data) => {
