@@ -406,6 +406,24 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* FIN DESCARGAR PROMOCIONES */
 
+        /* DESCARGAR FAMILIAS */
+        socket.on('descargar-familias', (data) => 
+        {
+            conexion.recHit(data.database, 'SELECT Nom as nombre, Pare as padre FROM Families WHERE Nivell > 0').then(resSQL =>
+            {
+                if (resSQL) 
+                {
+                    socket.emit('descargar-familias', resSQL.recordset);
+
+                }
+                else 
+                {
+                    socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
+                }
+            });
+        });
+        /* FIN DESCARGAR FAMILIAS */
+
         /* OTRA */
         socket.on('cargar-todo', (data) => {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
