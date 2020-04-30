@@ -321,23 +321,38 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         /* DESCARGAR ARTÍCULOS */
-        socket.on('descargar-articulos', (data) => {
+        socket.on('descargar-articulos', (data) => 
+        {
             console.log('LLEGA LA EMISIÓN');
-            conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => {
-                if (resSQL) {
-                    conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.codigoTienda}) AND TarifaCodi <> 0`).then(infoTarifas => {
-                        if (infoTarifas) {
-                            if (infoTarifas.recordset.length > 0) {
+            conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => 
+            {
+                console.log('TRAZA 1');
+                if (resSQL) 
+                {
+                    console.log('TRAZA 2');
+                    conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.codigoTienda}) AND TarifaCodi <> 0`).then(infoTarifas => 
+                    {
+                        console.log('TRAZA 3');
+                        if (infoTarifas) 
+                        {
+                            console.log('TRAZA 4');
+                            if (infoTarifas.recordset.length > 0) 
+                            {
+                                console.log('TRAZA 5');
                                 resSQL.recordset = configurarTarifasEspeciales(resSQL.recordset, infoTarifas.recordset);
                             }
                             socket.emit('descargar-articulos', resSQL.recordset);
                         }
-                        else {
+                        else 
+                        {
+                            console.log('TRAZA 6');
                             socket.emit('error', "Error en la respuesta de la consulta SQL infoTarifas");
                         }
                     });
                 }
-                else {
+                else 
+                {
+                    console.log('TRAZA 7');
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
