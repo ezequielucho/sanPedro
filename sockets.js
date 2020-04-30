@@ -424,6 +424,24 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* FIN DESCARGAR FAMILIAS */
 
+        /* DESCARGAR MENUS */
+        socket.on('descargar-menus', (data) => 
+        {
+            conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resSQL =>
+            {
+                if (resSQL) 
+                {
+                    socket.emit('descargar-menus', resSQL.recordset);
+
+                }
+                else 
+                {
+                    socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
+                }
+            });
+        });
+        /* FIN DESCARGAR MENUS */
+
         /* OTRA */
         socket.on('cargar-todo', (data) => {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
