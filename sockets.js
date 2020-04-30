@@ -387,6 +387,25 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* FIN DESCARGAR CLIENTES */
 
+        /* DESCARGAR PROMOCIONES */
+        socket.on('descargar-promociones', (data) => 
+        {
+            let sqlPromos = `SELECT Id as id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`;// AND Df > GETDATE()`;
+            conexion.recHit(data.database, sqlPromos).then(resSQL => {
+            {
+                if (resSQL) 
+                {
+                    socket.emit('descargar-promociones', resSQL.recordset);
+
+                }
+                else 
+                {
+                    socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
+                }
+            });
+        });
+        /* FIN DESCARGAR PROMOCIONES */
+
         /* OTRA */
         socket.on('cargar-todo', (data) => {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
