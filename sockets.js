@@ -323,7 +323,22 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* DESCARGAR ARTÍCULOS */
         socket.on('descargar-articulos', (data) => {
             conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => {
-                socket.emit('descargar-articulos', resSQL.recordset);
+                if (resSQL) {
+                    conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${codigoCliente}) AND TarifaCodi <> 0`).then(infoTarifas => {
+                        if (infoTarifas) {
+                            if (infoTarifas.recordset.length > 0) {
+                                resSQL.recordset = configurarTarifasEspeciales(resSQL.recordset, infoTarifas.recordset);
+                            }
+                            socket.emit('descargar-articulos', resSQL.recordset);
+                        }
+                        else {
+                            socket.emit('error', "Error en la respuesta de la consulta SQL infoTarifas");
+                        }
+                    });
+                }
+                else {
+                    socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
+                }
             });
         });
         /* FIN DESCARGAR ARTÍCULOS*/
