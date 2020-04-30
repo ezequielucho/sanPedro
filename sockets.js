@@ -324,7 +324,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('descargar-articulos', (data) => {
             conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => {
                 if (resSQL) {
-                    conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${codigoCliente}) AND TarifaCodi <> 0`).then(infoTarifas => {
+                    conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.codigoTienda}) AND TarifaCodi <> 0`).then(infoTarifas => {
                         if (infoTarifas) {
                             if (infoTarifas.recordset.length > 0) {
                                 resSQL.recordset = configurarTarifasEspeciales(resSQL.recordset, infoTarifas.recordset);
