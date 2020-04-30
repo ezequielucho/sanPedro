@@ -369,6 +369,24 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
         /* FIN DESCARGAR TRABAJADORES */
 
+        /* DESCARGAR CLIENTES */
+        socket.on('descargar-clientes', (data) => 
+        {
+            conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(resSQL =>
+            {
+                if (resSQL) 
+                {
+                    socket.emit('descargar-clientes', resSQL.recordset);
+
+                }
+                else 
+                {
+                    socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
+                }
+            });
+        });
+        /* FIN DESCARGAR CLIENTES */
+
         /* OTRA */
         socket.on('cargar-todo', (data) => {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
