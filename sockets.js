@@ -391,7 +391,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('descargar-promociones', (data) => 
         {
             let sqlPromos = `SELECT Id as id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`;// AND Df > GETDATE()`;
-            conexion.recHit(data.database, sqlPromos).then(resSQL => {
+            conexion.recHit(data.database, sqlPromos).then(resSQL =>
             {
                 if (resSQL) 
                 {
