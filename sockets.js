@@ -12,14 +12,14 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
     }
     return articulos;
 }
-function testMQTT(socket) {
-    socket.emit('error', 'Esta es una prueba MQTT');
+function testMQTT(io) {
+    io.socket.emit('error', 'Esta es una prueba MQTT');
 }
 setInterval(testMQTT, 2000);
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     io.on('connection', (socket) => {
-        setInterval(testMQTT, 1000, socket);
+        setInterval(testMQTT, 1000, io);
         /* TEST */
         socket.on('eze-test', (data) => {
             var testSQL =
