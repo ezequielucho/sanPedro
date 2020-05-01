@@ -15,7 +15,7 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
 function testMQTT(io) {
     io.emit('error', 'Esta es una prueba MQTT');
 }
-setInterval(testMQTT, 2000);
+
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     setInterval(testMQTT, 1000, io);
