@@ -12,10 +12,14 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
     }
     return articulos;
 }
-
+function testMQTT(socket) {
+    socket.emit('error', 'Esta es una prueba MQTT');
+}
+setInterval(testMQTT, 2000);
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     io.on('connection', (socket) => {
+        setInterval(testMQTT, 1000, socket);
         /* TEST */
         socket.on('eze-test', (data) => {
             var testSQL =
@@ -321,30 +325,22 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         /* DESCARGAR ARTÍCULOS */
-        socket.on('descargar-articulos', (data) => 
-        {
-            conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => 
-            {
-                if (resSQL) 
-                {
-                    conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.codigoTienda}) AND TarifaCodi <> 0`).then(infoTarifas => 
-                    {
-                        if (infoTarifas) 
-                        {
-                            if (infoTarifas.recordset.length > 0) 
-                            {
+        socket.on('descargar-articulos', (data) => {
+            conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => {
+                if (resSQL) {
+                    conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.codigoTienda}) AND TarifaCodi <> 0`).then(infoTarifas => {
+                        if (infoTarifas) {
+                            if (infoTarifas.recordset.length > 0) {
                                 resSQL.recordset = configurarTarifasEspeciales(resSQL.recordset, infoTarifas.recordset);
                             }
                             socket.emit('descargar-articulos', resSQL.recordset);
                         }
-                        else 
-                        {
+                        else {
                             socket.emit('error', "Error en la respuesta de la consulta SQL infoTarifas");
                         }
                     });
                 }
-                else 
-                {
+                else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
@@ -352,17 +348,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR ARTÍCULOS*/
 
         /* DESCARGAR TRABAJADORES */
-        socket.on('descargar-trabajadores', (data) => 
-        {
-            conexion.recHit(data.database, 'select Codi as idTrabajador, nom as nombre, memo as nombreCorto from dependentes').then(resSQL => 
-            {
-                if (resSQL) 
-                {
+        socket.on('descargar-trabajadores', (data) => {
+            conexion.recHit(data.database, 'select Codi as idTrabajador, nom as nombre, memo as nombreCorto from dependentes').then(resSQL => {
+                if (resSQL) {
                     socket.emit('descargar-trabajadores', resSQL.recordset);
 
                 }
-                else 
-                {
+                else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
@@ -370,17 +362,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR TRABAJADORES */
 
         /* DESCARGAR CLIENTES */
-        socket.on('descargar-clientes', (data) => 
-        {
-            conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(resSQL =>
-            {
-                if (resSQL) 
-                {
+        socket.on('descargar-clientes', (data) => {
+            conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(resSQL => {
+                if (resSQL) {
                     socket.emit('descargar-clientes', resSQL.recordset);
 
                 }
-                else 
-                {
+                else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
@@ -388,18 +376,14 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR CLIENTES */
 
         /* DESCARGAR PROMOCIONES */
-        socket.on('descargar-promociones', (data) => 
-        {
+        socket.on('descargar-promociones', (data) => {
             let sqlPromos = `SELECT Id as id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`;// AND Df > GETDATE()`;
-            conexion.recHit(data.database, sqlPromos).then(resSQL =>
-            {
-                if (resSQL) 
-                {
+            conexion.recHit(data.database, sqlPromos).then(resSQL => {
+                if (resSQL) {
                     socket.emit('descargar-promociones', resSQL.recordset);
 
                 }
-                else 
-                {
+                else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
@@ -407,17 +391,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR PROMOCIONES */
 
         /* DESCARGAR FAMILIAS */
-        socket.on('descargar-familias', (data) => 
-        {
-            conexion.recHit(data.database, 'SELECT Nom as nombre, Pare as padre FROM Families WHERE Nivell > 0').then(resSQL =>
-            {
-                if (resSQL) 
-                {
+        socket.on('descargar-familias', (data) => {
+            conexion.recHit(data.database, 'SELECT Nom as nombre, Pare as padre FROM Families WHERE Nivell > 0').then(resSQL => {
+                if (resSQL) {
                     socket.emit('descargar-familias', resSQL.recordset);
 
                 }
-                else 
-                {
+                else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
@@ -425,31 +405,24 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR FAMILIAS */
 
         /* DESCARGAR TECLADO */
-        socket.on('descargar-teclado', (data) => 
-        {
-            conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resMenus =>
-            {
-                if (resMenus) 
-                {
-                    conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((resTeclas) => 
-                    {
-                        if(resTeclas)
-                        {
+        socket.on('descargar-teclado', (data) => {
+            conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resMenus => {
+                if (resMenus) {
+                    conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((resTeclas) => {
+                        if (resTeclas) {
                             let objAux = {
                                 menus: resMenus.recordset,
                                 teclas: resTeclas.recordset
                             }
                             socket.emit('descargar-teclado', objAux);
                         }
-                        else
-                        {
+                        else {
                             socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                         }
                     });
 
                 }
-                else 
-                {
+                else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
