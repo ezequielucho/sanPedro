@@ -18,8 +18,8 @@ function testMQTT(io) {
 setInterval(testMQTT, 2000);
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
+    setInterval(testMQTT, 1000, io);
     io.on('connection', (socket) => {
-        setInterval(testMQTT, 1000, io);
         /* TEST */
         socket.on('eze-test', (data) => {
             var testSQL =
