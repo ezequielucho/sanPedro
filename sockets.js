@@ -13,12 +13,12 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
     return articulos;
 }
 function sincronizarClientes(io) {
-    io.emit('error', 'Esta es una prueba MQTT');
+    io.emit('ordenSincronizarTodo', 'Sincronizar tocGame con BBDD WEB');
 }
 
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
-    setInterval(sincronizarClientes, 1000, io);
+    setInterval(sincronizarClientes, 7200000, io);
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
