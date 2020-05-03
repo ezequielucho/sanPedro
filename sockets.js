@@ -12,13 +12,13 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
     }
     return articulos;
 }
-function testMQTT(io) {
+function sincronizarClientes(io) {
     io.emit('error', 'Esta es una prueba MQTT');
 }
 
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
-    //setInterval(testMQTT, 1000, io);
+    setInterval(sincronizarClientes, 1000, io);
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
