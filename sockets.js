@@ -18,7 +18,7 @@ function sincronizarClientes(io) {
 
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
-    setInterval(sincronizarClientes, 60000, io);//7200000, io);
+    setInterval(sincronizarClientes, 7200000, io);
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
