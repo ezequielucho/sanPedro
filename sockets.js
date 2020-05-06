@@ -286,7 +286,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', '[${data.codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', ' [${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}] ', '[${data.arrayCajas[i].primerTicket},${data.arrayCajas[i].ultimoTicket}]', '[${sumaEfectivoTarjetaTotal}]', getdate());`;
 
 
-                let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + ;
+                let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + sqlAna2;
                 conexion.recHit(data.database, sqlCompleta).then(aux => {
                     socket.emit('confirmarEnvioCaja', {
                         idCaja: data.arrayCajas[i].id,
