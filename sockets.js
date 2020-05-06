@@ -237,6 +237,8 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 let sqlW = '';
                 let sqlWi = '';
                 let sqlO = '';
+                let sqlAna = '';
+                let sqlAna2 = '';
                 let nombreTabla = '[V_Moviments_' + finalYear + '-' + finalMonth + ']';
 
                 sqlZGJ = `
@@ -280,7 +282,12 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                             INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[14].valor}, 'En : 500');
                 `;
 
-                let sqlCompleta = sqlZGJ + sqlW + sqlWi;
+                sqlAna = `INSERT INTO feinesafer VALUES (newid(), 'VigilarAlertes', 0, 'Caixa', '[${inicioDay}-${inicioMonth}-${inicioYear} de ${inicioHours}:${inicioMinutes} a ${finalHours}:${finalMinutes}]', '[${data.codigoTienda}]', '${descuadre}', '${sumaEfectivoTarjetaTotal}', getdate());`;
+                sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', '[${codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', ' [${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}] ', '[2000,2600]', '[${sumaEfectivoTarjetaTotal}]', getdate())  `;
+                insert into feinesafer values(newid(), 'SincroMURANOCaixaOnLine', '[Tienda]', '[Fecha Hora apertura]', '[Fecha Hora cierre]', '[PrimerTicket,UltimTicket]', '[Z]', getdate())
+
+
+                let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna;
                 conexion.recHit(data.database, sqlCompleta).then(aux => {
                     socket.emit('confirmarEnvioCaja', {
                         idCaja: data.arrayCajas[i].id,
