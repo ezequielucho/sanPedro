@@ -283,7 +283,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 `;
 
                 sqlAna = `INSERT INTO feinesafer VALUES (newid(), 'VigilarAlertes', 0, 'Caixa', '[${inicioDay}-${inicioMonth}-${inicioYear} de ${inicioHours}:${inicioMinutes} a ${finalHours}:${finalMinutes}]', '[${data.codigoTienda}]', '${descuadre}', '${sumaEfectivoTarjetaTotal}', getdate());`;
-                sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', '[${data.codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', ' [${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}] ', '[${data.arrayCajas[i].primerTicket},${data.arrayCajas[i].ultimoTicket}]', '[${sumaEfectivoTarjetaTotal}]', getdate());`;
+                sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', 0, '[${data.codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', ' [${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}] ', '[${data.arrayCajas[i].primerTicket},${data.arrayCajas[i].ultimoTicket}]', '[${sumaEfectivoTarjetaTotal}]', getdate());`;
 
 
                 let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + sqlAna2;
