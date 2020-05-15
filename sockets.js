@@ -450,7 +450,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                     if (res1) {
                                         conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((res) => {
                                             if (res) {
-                                                conexion.recHit(data.database, 'select Codi as idTrabajador, nom as nombre, memo as nombreCorto from dependentes').then(res3 => {
+                                                conexion.recHit(data.database, 'select Codi as idTrabajador, Codi as _id nom as nombre, memo as nombreCorto from dependentes').then(res3 => {
                                                     if (res3) {
                                                         conexion.recHit(data.database, 'SELECT Nom as nombre, Pare as padre FROM Families WHERE Nivell > 0').then(res4 => {
                                                             if (res4) { //Esta consulta debería buscar el codigo de cliente en el paramsHw, según la licencia data.licencia
