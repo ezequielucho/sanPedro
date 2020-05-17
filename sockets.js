@@ -414,7 +414,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('descargar-teclado', (data) => {
             conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resMenus => {
                 if (resMenus) {
-                    conexion.recHit(data.database, `SELECT Ambient as nomMenu, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((resTeclas) => {
+                    conexion.recHit(data.database, `SELECT Ambient as nomMenu,  (select nom from articles where codi = article) as nombreArticulo, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((resTeclas) => {
                         if (resTeclas) {
                             let objAux = {
                                 menus: resMenus.recordset,
