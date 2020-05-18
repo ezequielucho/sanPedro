@@ -3,7 +3,7 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
     if (arrayTarifasEspeciales.length > 0) /* APLICAR TARIFAS ESPECIALES */ {
         for (let i = 0; i < arrayTarifasEspeciales.length; i++) {
             for (let j = 0; j < articulos.length; j++) {
-                if (articulos[j].id === arrayTarifasEspeciales[i].id) {
+                if (articulos[j]._id === arrayTarifasEspeciales[i].id) {
                     articulos[j].precioConIva = arrayTarifasEspeciales[i].precioConIva;
                     break;
                 }
@@ -415,8 +415,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resMenus => {
                 if (resMenus) {
                     conexion.recHit(data.database, `SELECT Ambient as nomMenu,  (select nom from articles where codi = article) as nombreArticulo, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((resTeclas) => {
-                        if (resTeclas) {
-                            let objAux = {
+                        if (resTeclas) 
+                        {
+                            let objAux = 
+                            {
                                 menus: resMenus.recordset,
                                 teclas: resTeclas.recordset
                             }
@@ -428,7 +430,8 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     });
 
                 }
-                else {
+                else 
+                {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
                 }
             });
@@ -436,18 +439,23 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR TECLADO */
 
         /* OTRA */
-        socket.on('cargar-todo', (data) => {
+        socket.on('cargar-todo', (data) => 
+        {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
                 let codigoCliente = res8.recordset[0].codigoCliente;
                 if (res8) {
-                    conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as esSumable, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(res2 => {
+                    conexion.recHit(data.database, 'SELECT Codi as _id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as esSumable, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(res2 => {
                         conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${codigoCliente}) AND TarifaCodi <> 0`).then(res7 => {
-                            if (res7) {
-                                if (res7.recordset.length > 0) {
+                            if (res7) 
+                            {
+                                if (res7.recordset.length > 0) 
+                                {
                                     res2.recordset = configurarTarifasEspeciales(res2.recordset, res7.recordset);
                                 }
-                                conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(res1 => {
-                                    if (res1) {
+                                conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(res1 => 
+                                    {
+                                    if (res1) 
+                                    {
                                         conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, (select EsSumable from articles where codi = article) as esSumable, (select nom from articles where codi = article) as nombreArticulo, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((res) => {
                                             if (res) {
                                                 conexion.recHit(data.database, 'select Codi as idTrabajador, Codi as _id, nom as nombre, memo as nombreCorto from dependentes').then(res3 => {
