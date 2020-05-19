@@ -12,6 +12,20 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
     }
     return articulos;
 }
+
+function configurarTarifasEspecialesViejo(articulos, arrayTarifasEspeciales) {
+    if (arrayTarifasEspeciales.length > 0) /* APLICAR TARIFAS ESPECIALES */ {
+        for (let i = 0; i < arrayTarifasEspeciales.length; i++) {
+            for (let j = 0; j < articulos.length; j++) {
+                if (articulos[j].id === arrayTarifasEspeciales[i].id) {
+                    articulos[j].precioConIva = arrayTarifasEspeciales[i].precioConIva;
+                    break;
+                }
+            }
+        }
+    }
+    return articulos;
+}
 function sincronizarClientes(io) {
     io.emit('ordenSincronizarTodo', 'Sincronizar tocGame con BBDD WEB');
 }
@@ -367,7 +381,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.codigoTienda}) AND TarifaCodi <> 0`).then(infoTarifas => {
                         if (infoTarifas) {
                             if (infoTarifas.recordset.length > 0) {
-                                resSQL.recordset = configurarTarifasEspeciales(resSQL.recordset, infoTarifas.recordset);
+                                resSQL.recordset = configurarTarifasEspecialesViejo(resSQL.recordset, infoTarifas.recordset);
                             }
                             socket.emit('descargar-articulos', resSQL.recordset);
                         }
