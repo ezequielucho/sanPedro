@@ -23,22 +23,22 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
     {
         if(res5.recordset[i].principal.startsWith('F_'))
         {
-            objPrincipal = await conexion.recHit(database, `select Codi as id from articles where familia = '${res5.recordset[i].principal.substring(2)}'`);
+            objPrincipal = await conexion.recHit(database, `select Codi as _id from articles where familia = '${res5.recordset[i].principal.substring(2)}'`);
             res5.recordset[i].principal = objPrincipal;
         }
         else
         {
-            res5.recordset[i].principal = [{id: Number(res5.recordset[i].principal)}]
+            res5.recordset[i].principal = [{_id: Number(res5.recordset[i].principal)}]
         }
 
         if(res5.recordset[i].secundario.startsWith('F_'))
         {
-            objSecundario = await conexion.recHit(database, `select Codi as id from articles where familia = '${res5.recordset[i].secundario.substring(2)}'`);
+            objSecundario = await conexion.recHit(database, `select Codi as _id from articles where familia = '${res5.recordset[i].secundario.substring(2)}'`);
             res5.recordset[i].secundario = objSecundario;
         }
         else
         {
-            res5.recordset[i].secundario = [{id: Number(res5.recordset[i].secundario)}]
+            res5.recordset[i].secundario = [{_id: Number(res5.recordset[i].secundario)}]
         }
         objPrincipal    = null;
         objSecundario   = null;
