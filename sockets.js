@@ -43,6 +43,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
         objPrincipal    = null;
         objSecundario   = null;
     }
+    console.log(res5);
     return res5;
 }
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
