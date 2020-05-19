@@ -15,7 +15,36 @@ function configurarTarifasEspeciales(articulos, arrayTarifasEspeciales) {
 function sincronizarClientes(io) {
     io.emit('ordenSincronizarTodo', 'Sincronizar tocGame con BBDD WEB');
 }
+async function familiasPorObjetos(res5, database, codigoCliente, conexion)
+{
+    let objPrincipal    = null;
+    let objSecundario   = null;
+    for(let i = 0; i < res5.recordset; i++)
+    {
+        if(res5.recordset[i].principal.startsWith('F_'))
+        {
+            objPrincipal = await conexion.recHit(database, `select Codi as id from articles where familia = '${res5.recordset[i].principal.substring(2)}'`);
+            res5.recordset[i].principal = objPrincipal;
+        }
+        else
+        {
+            res5.recordset[i].principal = [{id: Number(res5.recordset[i].principal)}]
+        }
 
+        if(res5.recordset[i].secundario.startsWith('F_'))
+        {
+            objSecundario = await conexion.recHit(database, `select Codi as id from articles where familia = '${res5.recordset[i].secundario.substring(2)}'`);
+            res5.recordset[i].secundario = objSecundario;
+        }
+        else
+        {
+            res5.recordset[i].secundario = [{id: Number(res5.recordset[i].secundario)}]
+        }
+        objPrincipal    = null;
+        objSecundario   = null;
+    }
+    return res5;
+}
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     setInterval(sincronizarClientes, 7200000, io);
@@ -439,7 +468,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR TECLADO */
 
         /* OTRA */
-        socket.on('cargar-todo', (data) => 
+        socket.on('cargar-todo', async (data) => 
         {
             conexion.recHit(data.database, `SELECT Valor1 as codigoCliente FROM ParamsHw WHERE Codi = ${data.licencia}`).then(res8 => {
                 let codigoCliente = res8.recordset[0].codigoCliente;
@@ -465,6 +494,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                                                 let sqlPromos = `SELECT Id as _id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`;// AND Df > GETDATE()`;
                                                                 conexion.recHit(data.database, sqlPromos).then(res5 => {
                                                                     if (res5) {
+                                                                        res5 = await familiasPorObjetos(res5, data.database, codigoCliente, conexion);
                                                                         conexion.recHit(data.database, `select Variable AS nombreDato, Valor AS valorDato from paramsTpv where CodiClient = ${codigoCliente} AND (Variable = 'Capselera_1' OR Variable = 'Capselera_2')`).then(res10 => {
                                                                             conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(res6 => {
                                                                                 if (res6) {
