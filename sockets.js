@@ -19,7 +19,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
 {
     let objPrincipal    = null;
     let objSecundario   = null;
-    for(let i = 0; i < res5.recordset; i++)
+    for(let i = 0; i < res5.recordset.length; i++)
     {
         if(res5.recordset[i].principal.startsWith('F_'))
         {
