@@ -24,7 +24,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
         if(res5.recordset[i].principal.startsWith('F_'))
         {
             objPrincipal = await conexion.recHit(database, `select Codi as _id from articles where familia = '${res5.recordset[i].principal.substring(2)}'`);
-            res5.recordset[i].principal = objPrincipal;
+            res5.recordset[i].principal = objPrincipal.recordset;
         }
         else
         {
@@ -34,7 +34,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
         if(res5.recordset[i].secundario.startsWith('F_'))
         {
             objSecundario = await conexion.recHit(database, `select Codi as _id from articles where familia = '${res5.recordset[i].secundario.substring(2)}'`);
-            res5.recordset[i].secundario = objSecundario;
+            res5.recordset[i].secundario = objSecundario.recordset;
         }
         else
         {
