@@ -101,6 +101,52 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 console.log('La última fecha es: ', res);
             });
         });
+
+        socket.on('sincronizar-tickets-tocgame', data=>{
+            for(let j = 0; j < data.arrayTickets.length; j++)
+            {
+                let sql = '';
+                let campoOtros = '';
+                let fechaTicket = Date(data.arrayTickets[j].timestamp);
+                let mesBonito = fechaTicket.getMonth().toString();
+                if(mesBonito.length < 2)
+                {
+                    mesBonito = '0'+ mesBonito;
+                }
+                let nombreTabla = `[V_Venut_${fechaTicket.getFullYear()}-${mesBonito}]`;
+                for (let i = 0; i < data.arrayTickets[j].lista.length; i++)
+                {
+                    if (data.arrayTickets[j].tarjeta)
+                    {
+                        campoOtros = '[Visa]';
+                    }
+                    else 
+                    {
+                        campoOtros = '';
+                    }
+                    
+                    sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].idArticulo}, ${data.arrayTickets[j].lista[i].unidades}, ${data.arrayTickets[j].lista[i].subtotal}, 'V', 0, '${campoOtros}');`;
+                }
+    
+                conexion.recHit(data.parametros.database, sql).then(res => {
+                    let sql2 = `IF EXISTS (SELECT * FROM tocGame_idTickets WHERE licencia = ${data.parametros.licencia}) 
+                                BEGIN
+                                UPDATE tocGame_idTickets SET ultimoIdTicket = ${data.arrayTickets[j]._id} WHERE licencia = ${data.parametros.licencia}
+                                END
+                                ELSE
+                                BEGIN
+                                    INSERT INTO tocGame_idTickets (licencia, bbdd, ultimoIdTicket) VALUES (${data.parametros.licencia}, '${data.parametros.database}', ${data.arrayTickets[j]._id})
+                                END`;
+                    conexion.recHit('Hit', sql2).then(res2 => {
+                        socket.emit('confirmarEnvioTicket', {
+                            idTicket: data.arrayTickets[j]._id,
+                            respuestaSql: res
+                        });
+                    });
+                });
+            }
+        })
+
         /* GUARDAR FICHAJES */
         socket.on('guardarFichajes', (data) => {
             var fechaEntrada = new Date(data.infoFichaje.fecha.year, data.infoFichaje.fecha.month, data.infoFichaje.fecha.day, data.infoFichaje.fecha.hours, data.infoFichaje.fecha.minutes, data.infoFichaje.fecha.seconds);
