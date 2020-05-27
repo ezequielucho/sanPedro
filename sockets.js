@@ -109,11 +109,33 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 let campoOtros = '';
                 let fechaTicket = Date(data.arrayTickets[j].timestamp);
                 let mesBonito = fechaTicket.getMonth().toString();
-                if(mesBonito.length < 2)
-                {
-                    mesBonito = '0'+ mesBonito;
+
+
+                let year = `${fechaTicket.getFullYear()}`;
+                let month = `${fechaTicket.getMonth() + 1}`;
+                let day = `${fechaTicket.getDate()}`;
+                let hours = `${fechaTicket.getHours()}`;
+                let minutes = `${fechaTicket.getMinutes()}`;
+                let seconds = `${fechaTicket.getSeconds()}`;
+    
+                if (month.length === 1) {
+                    month = '0' + month;
                 }
-                let nombreTabla = `[V_Venut_${fechaTicket.getFullYear()}-${mesBonito}]`;
+                if (day.length === 1) {
+                    day = '0' + day;
+                }
+                if (hours.length === 1) {
+                    hours = '0' + hours;
+                }
+                if (minutes.length === 1) {
+                    minutes = '0' + minutes;
+                }
+                if (seconds.length === 1) {
+                    seconds = '0' + seconds;
+                }
+
+                let nombreTabla = `[V_Venut_${year}-${month}]`;
+   
                 for (let i = 0; i < data.arrayTickets[j].lista.length; i++)
                 {
                     if (data.arrayTickets[j].tarjeta)
