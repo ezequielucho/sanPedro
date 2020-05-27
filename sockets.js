@@ -108,7 +108,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 let sql = '';
                 let campoOtros = '';
                 console.log(data.arrayTickets);
-                let fechaTicket = Date(data.arrayTickets[j].timestamp);
+                let fechaTicket = new Date(data.arrayTickets[j].timestamp);
                 console.log("Q SOY: ", fechaTicket);
                 let year = `${fechaTicket.getFullYear()}`;
                 let month = `${fechaTicket.getMonth() + 1}`;
