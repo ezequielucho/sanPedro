@@ -145,7 +145,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     {
                         campoOtros = '';
                     }
-                    if(data.arrayTickets[j].cliente !== null && data.arrayTickets[j].cliente.length > 3)
+                    if(data.arrayTickets[j].cliente !== null)
                     {
                         campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
                     }
