@@ -149,7 +149,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     {
                         campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
                     }
-                    console.log("el futuro es hoy oiste viejo: ", typeof data.arrayTickets[j].lista[i].lol);
+                    
                     if(typeof data.arrayTickets[j].lista[i]._id === "object")
                     {
                         var idLista = data.arrayTickets[j].lista[i].idArticulo;
