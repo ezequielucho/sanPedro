@@ -151,11 +151,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     }
                     if(data.arrayTickets[j].lista[i]._id == undefined)
                     {
-                        let idLista = data.arrayTickets[j].lista[i].idArticulo;
+                        var idLista = data.arrayTickets[j].lista[i].idArticulo;
                     }
                     else
                     {
-                        let idLista = data.arrayTickets[j].lista[i]._id;
+                        var idLista = data.arrayTickets[j].lista[i]._id;
                     }
                     
                     
