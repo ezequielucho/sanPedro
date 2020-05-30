@@ -149,13 +149,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     {
                         campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
                     }
-                    if(typeof data.arrayTickets[j].lista[i]._id !== "undefined")
-                    {
-                        var idLista = data.arrayTickets[j].lista[i]._id;
-                    }
-                    if(typeof data.arrayTickets[j].lista[i].idArticulo !== "undefined")
+                    if(typeof data.arrayTickets[j].lista[i]._id === "undefined")
                     {
                         var idLista = data.arrayTickets[j].lista[i].idArticulo;
+                    }
+                    if(typeof data.arrayTickets[j].lista[i].idArticulo === "undefined")
+                    {
+                        var idLista = data.arrayTickets[j].lista[i]._id;
                     }
                     
                     
