@@ -149,13 +149,14 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     {
                         campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
                     }
-                    if(data.arrayTickets[j].lista[i]._id == undefined)
+                    if(typeof data.arrayTickets[j].lista[i]._id === undefined)
                     {
                         var idLista = data.arrayTickets[j].lista[i].idArticulo;
                     }
                     else
                     {
                         var idLista = data.arrayTickets[j].lista[i]._id;
+                        console.log("EZE: ", data.arrayTickets[j].lista[i]._id);
                     }
                     
                     
