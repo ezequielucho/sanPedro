@@ -149,11 +149,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     {
                         campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
                     }
-                    if(typeof data.arrayTickets[j].lista[i]._id === "string")
+                    if(typeof data.arrayTickets[j].lista[i]._id !== "undefined")
                     {
                         var idLista = data.arrayTickets[j].lista[i]._id;
                     }
-                    else
+                    if(typeof data.arrayTickets[j].lista[i].idArticulo !== "undefined")
                     {
                         var idLista = data.arrayTickets[j].lista[i].idArticulo;
                     }
