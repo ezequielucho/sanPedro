@@ -159,6 +159,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         var idLista = data.arrayTickets[j].lista[i]._id;
                     }
                     
+                    if(data.parametros.licencia == 842)
+                    {
+                        console.log(` La fechita guapa es: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`);
+                    }
                     
                     sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${idLista}, ${data.arrayTickets[j].lista[i].unidades}, ${data.arrayTickets[j].lista[i].subtotal}, 'V', 0, '${campoOtros}');`;
                 }
