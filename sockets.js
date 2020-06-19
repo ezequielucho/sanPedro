@@ -103,31 +103,32 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         socket.on('comprobarClienteVIP', data=>{
-            var sql = 
-            `
-                DECLARE @idCliente int;
-                SELECT @idCliente = Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}'
-                IF EXISTS (SELECT * FROM ConstantsClient WHERE Variable = 'EsClient' AND Valor = 'EsClient' AND Codi = @idCliente)
-                    BEGIN
-                        SELECT 1 as resultado
-                    END
-                ELSE
-                    BEGIN
-                        SELECT 0 as resultado
-                    END
-            `;
-            conexion.recHit(data.database, sql).then(res=>{
-                if(res.recordset[0].resultado == 0) //NORMAL
-                {
-                    socket.emit('respuestaClienteEsVIP', false);
-                }
-                else
-                {
-                    if(res.recordset[0].resultado == 1) //VIP
+            conexion.recHit(data.database, `SELECT Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}`).then(res1=>{
+                let codiClient = res1.recordset[0].codi;
+                var sql = 
+                `
+                    IF EXISTS (SELECT * FROM ConstantsClient WHERE Variable = 'EsClient' AND Valor = 'EsClient' AND Codi = ${codiClient})
+                        BEGIN
+                            SELECT 1 as resultado
+                        END
+                    ELSE
+                        BEGIN
+                            SELECT 0 as resultado
+                        END
+                `;
+                conexion.recHit(data.database, sql).then(res=>{
+                    if(res.recordset[0].resultado == 0) //NORMAL
                     {
-                        socket.emit('respuestaClienteEsVIP', true);
+                        socket.emit('respuestaClienteEsVIP', false);
                     }
-                }
+                    else
+                    {
+                        if(res.recordset[0].resultado == 1) //VIP
+                        {
+                            socket.emit('respuestaClienteEsVIP', true);
+                        }
+                    }
+                });
             });
         });
 
