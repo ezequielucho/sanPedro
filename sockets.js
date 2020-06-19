@@ -103,7 +103,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         socket.on('comprobarClienteVIP', data=>{
-            conexion.recHit(data.database, `SELECT Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}`).then(res1=>{
+            conexion.recHit(data.database, `SELECT Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}'`).then(res1=>{
                 let codiClient = res1.recordset[0].codi;
                 var sql = 
                 `
