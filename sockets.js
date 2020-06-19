@@ -103,32 +103,30 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         socket.on('comprobarClienteVIP', data=>{
-            console.log(data.database)
-            conexion.recHit(data.database, `SELECT Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}';`).then(res1=>{
-                let codiClient = res1.recordset[0].codi;
-                var sql = `
-                    IF EXISTS (SELECT * FROM ConstantsClient WHERE Variable = 'EsClient' AND Valor = 'EsClient' AND Codi = ${codiClient})
-                        BEGIN
-                            SELECT 1 as resultado
-                        END
-                    ELSE
-                        BEGIN
-                            SELECT 0 as resultado
-                        END
-                `;
-                conexion.recHit(data.database, sql).then(res=>{
-                    if(res.recordset[0].resultado == 0) //NORMAL
+            var sql = `
+            DECLARE @idCliente int;
+            SELECT @idCliente = Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = 'CliBoti_000_{1FF2158B-D167-440E-973A-77DD7847268F}'
+            IF EXISTS (SELECT * FROM ConstantsClient WHERE Variable = 'EsClient' AND Valor = 'EsClient' AND Codi = @idCliente)
+                BEGIN
+                    SELECT 1 as resultado
+                END
+            ELSE
+                BEGIN
+                    SELECT 0 as resultado
+                END
+            `;
+            conexion.recHit(data.parametros.database, sql).then(res=>{
+                if(res.recordset[0].resultado == 0) //NORMAL
+                {
+                    socket.emit('respuestaClienteEsVIP', false);
+                }
+                else
+                {
+                    if(res.recordset[0].resultado == 1) //VIP
                     {
-                        socket.emit('respuestaClienteEsVIP', false);
+                        socket.emit('respuestaClienteEsVIP', true);
                     }
-                    else
-                    {
-                        if(res.recordset[0].resultado == 1) //VIP
-                        {
-                            socket.emit('respuestaClienteEsVIP', true);
-                        }
-                    }
-                });
+                }
             });
         });
 
