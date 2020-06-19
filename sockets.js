@@ -118,12 +118,14 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             conexion.recHit(data.parametros.database, sql).then(res=>{
                 if(res.recordset[0].resultado == 0) //NORMAL
                 {
+                    console.log(res.recordset[0].resultado + " - " + typeof res.recordset[0].resultado);
                     socket.emit('respuestaClienteEsVIP', false);
                 }
                 else
                 {
                     if(res.recordset[0].resultado == 1) //VIP
                     {
+                        console.log(res.recordset[0].resultado + " - " + typeof res.recordset[0].resultado);
                         socket.emit('respuestaClienteEsVIP', true);
                     }
                 }
