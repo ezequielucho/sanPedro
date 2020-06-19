@@ -105,7 +105,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('comprobarClienteVIP', data=>{
             var sql = `
             DECLARE @idCliente int;
-            SELECT @idCliente = Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = 'CliBoti_000_{1FF2158B-D167-440E-973A-77DD7847268F}'
+            SELECT @idCliente = Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}'
             IF EXISTS (SELECT * FROM ConstantsClient WHERE Variable = 'EsClient' AND Valor = 'EsClient' AND Codi = @idCliente)
                 BEGIN
                     SELECT 1 as resultado
@@ -118,14 +118,12 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             conexion.recHit(data.parametros.database, sql).then(res=>{
                 if(res.recordset[0].resultado == 0) //NORMAL
                 {
-                    console.log(res.recordset[0].resultado + " - " + typeof res.recordset[0].resultado);
                     socket.emit('respuestaClienteEsVIP', false);
                 }
                 else
                 {
                     if(res.recordset[0].resultado == 1) //VIP
                     {
-                        console.log(res.recordset[0].resultado + " - " + typeof res.recordset[0].resultado);
                         socket.emit('respuestaClienteEsVIP', true);
                     }
                 }
