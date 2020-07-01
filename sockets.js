@@ -130,7 +130,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     if(res.recordset[0].resultado == 1) //VIP
                     {
                         objEnviar.esVip = true;
-                        conexion.recHit(DATA.parametros.database, `SELECT Nom as nombre, Nif as nif, Adresa as direccion, Ciutat as Ciudad, Cp as cp FROM Clients WHERE Codi = (SELECT TOP 1 Codi FROM ConstantsClient WHERE Valor = '${data.idCliente}' AND Variable = 'CFINAL')`).then(res2=>{
+                        conexion.recHit(data.parametros.database, `SELECT Nom as nombre, Nif as nif, Adresa as direccion, Ciutat as Ciudad, Cp as cp FROM Clients WHERE Codi = (SELECT TOP 1 Codi FROM ConstantsClient WHERE Valor = '${data.idCliente}' AND Variable = 'CFINAL')`).then(res2=>{
                             objEnviar.datos = res2.recordset;
                             socket.emit('respuestaClienteEsVIP', objEnviar);
                         });
