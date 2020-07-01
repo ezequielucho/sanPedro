@@ -101,8 +101,12 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 console.log('La última fecha es: ', res);
             });
         });
-
+//-----------------------------------------------------------------
         socket.on('comprobarClienteVIP', data=>{
+            var objEnviar = {
+                esVip: false,
+                info: null
+            };
             var sql = `
             DECLARE @idCliente int;
             SELECT @idCliente = Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}'
@@ -118,18 +122,23 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             conexion.recHit(data.parametros.database, sql).then(res=>{
                 if(res.recordset[0].resultado == 0) //NORMAL
                 {
-                    socket.emit('respuestaClienteEsVIP', false);
+                    objEnviar.esVip = false;
+                    socket.emit('respuestaClienteEsVIP', objEnviar);
                 }
                 else
                 {
                     if(res.recordset[0].resultado == 1) //VIP
                     {
-                        socket.emit('respuestaClienteEsVIP', true);
+                        objEnviar.esVip = true;
+                        conexion.recHit(DATA.parametros.database, `SELECT Nom as nombre, Nif as nif, Adresa as direccion, Ciutat as Ciudad, Cp as cp FROM Clients WHERE Codi = (SELECT TOP 1 Codi FROM ConstantsClient WHERE Valor = '${data.idCliente}' AND Variable = 'CFINAL')`).then(res2=>{
+                            objEnviar.datos = res2.recordset;
+                            socket.emit('respuestaClienteEsVIP', objEnviar);
+                        });
                     }
                 }
             });
         });
-
+//------------------------------------------------------------------
         socket.on('sincronizar-tickets-tocgame', data=>{
             for(let j = 0; j < data.arrayTickets.length; j++)
             {
