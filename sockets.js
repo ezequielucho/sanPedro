@@ -358,8 +358,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     conexion.recHit(data.parametros.database, sql).then(()=>{
                         socket.emit('confirmarEnvioFichaje', data.info._id);
                     });
-                }
-            }           
+                }          
         });
         /* GUARDAR TICKET */
         socket.on('guardar-ticket', (data) => {
