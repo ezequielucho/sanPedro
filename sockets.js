@@ -266,7 +266,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             }
         });
         /* GUARDAR FICHAJES TOC GAME V2*/
-        socket.on('guardarFichajes-tocGame', (data) => {
+        socket.on('guardarFichajes-tocGame', (data) => { //A PARTIR DE TODOS LOS TOCS CON VERSIÓN SUPERIOR A LA 2.3.93, ESTA FUNCIÓN SE PUEDE BORRAR
             let sql = '';
             for(let i = 0; i < data.arrayFichajes.length; i++)
             {
@@ -313,6 +313,53 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     });
                 }
             }            
+        });
+        /* GUARDAR FICHAJES TOC GAME V2*/
+        socket.on('guardarFichajes-tocGame-nueva', (data) => { //EL CAMBIO ES QUE AHORA SE INSERTAN INDIVIDUALMENTE, NO ESTÁ PROBADO SU FUNCIONAMIENTO CON GRANDES CANTIDADES DE DATOS ACUMULADOS A LA VEZ.
+                let sql = '';
+                var fechaEntrada = new Date(data.info.infoFichaje.fecha.year, data.info.infoFichaje.fecha.month, data.info.infoFichaje.fecha.day, data.info.infoFichaje.fecha.hours, data.info.infoFichaje.fecha.minutes, data.info.infoFichaje.fecha.seconds);
+                
+                let year = `${fechaEntrada.getFullYear()}`;
+                let month = `${fechaEntrada.getMonth() + 1}`;
+                let day = `${fechaEntrada.getDate()}`;
+                let hours = `${fechaEntrada.getHours()}`;
+                let minutes = `${fechaEntrada.getMinutes()}`;
+                let seconds = `${fechaEntrada.getSeconds()}`;
+    
+                if (month.length === 1) {
+                    month = '0' + month;
+                }
+                if (day.length === 1) {
+                    day = '0' + day;
+                }
+                if (hours.length === 1) {
+                    hours = '0' + hours;
+                }
+                if (minutes.length === 1) {
+                    minutes = '0' + minutes;
+                }
+                if (seconds.length === 1) {
+                    seconds = '0' + seconds;
+                }
+                if (data.info.tipo === 'ENTRADA') 
+                {
+    
+                    sql += `INSERT INTO cdpDadesFichador (id, tmst, accio, usuari, idr, lloc, comentari) VALUES (0, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), 1, ${data.info.infoFichaje.idTrabajador}, NEWID(), ${data.parametros.codigoTienda}, '${data.parametros.nombreTienda}')`;
+                }
+                else 
+                {
+                    if (data.info.tipo === 'SALIDA') 
+                    {
+                        sql += `INSERT INTO cdpDadesFichador (id, tmst, accio, usuari, idr, lloc, comentari) VALUES (0, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), 2, ${data.info.infoFichaje.idTrabajador}, NEWID(), ${data.parametros.codigoTienda}, '${data.parametros.nombreTienda}')`;
+                    }
+                }
+                if(sql.length > 0)
+                {
+                    conexion.recHit(data.parametros.database, sql).then(()=>{
+                        socket.emit('confirmarEnvioFichaje', data.info._id);
+                    });
+                }
+            }           
         });
         /* GUARDAR TICKET */
         socket.on('guardar-ticket', (data) => {
