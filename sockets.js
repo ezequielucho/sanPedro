@@ -238,12 +238,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         })
 //------------------------------------------------------------------
         socket.on('guardarDevoluciones', data=>{
-            for(let j = 0; j < data.arrayTickets.length; j++)
-            {
                 let sql = '';
                 let campoOtros = '';
                 
-                let fechaTicket = new Date(data.arrayTickets[j].timestamp);
+                let fechaTicket = new Date(data.info.timestamp);
                 
                 let year = `${fechaTicket.getFullYear()}`;
                 let month = `${fechaTicket.getMonth() + 1}`;
@@ -270,9 +268,9 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
                 let nombreTabla = `[V_Tornat_${year}-${month}]`;
    
-                for (let i = 0; i < data.arrayTickets[j].lista.length; i++)
+                for (let i = 0; i < data.info.lista.length; i++)
                 {
-                    if (data.arrayTickets[j].tarjeta)
+                    if (data.info.tarjeta)
                     {
                         campoOtros = '[Visa]';
                     }
@@ -280,49 +278,48 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     {
                         campoOtros = '';
                     }
-                    if(data.arrayTickets[j].cliente !== null && data.arrayTickets[j].cliente !== undefined)
+                    if(data.info.cliente !== null && data.info.cliente !== undefined)
                     {
-                        campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
+                        campoOtros += `[Id:${data.info.cliente}]`;
                     }
                     
-                    if(typeof data.arrayTickets[j].lista[i]._id === "object")
+                    if(typeof data.info.lista[i]._id === "object")
                     {
-                        var idLista = data.arrayTickets[j].lista[i].idArticulo;
+                        var idLista = data.info.lista[i].idArticulo;
                     }
-                    if(typeof data.arrayTickets[j].lista[i].idArticulo === "undefined")
+                    if(typeof data.info.lista[i].idArticulo === "undefined")
                     {
-                        var idLista = data.arrayTickets[j].lista[i]._id;
+                        var idLista = data.info.lista[i]._id;
                     }
                     
                     if(data.parametros.licencia == 842)
                     {
                         console.log(` La fechita guapa es: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`);
                     }
-                    if(data.arrayTickets[j].lista[i].promocion.esPromo)
+                    if(data.info.lista[i].promocion.esPromo)
                     {
-                        if(data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario != 0)
+                        if(data.info.lista[i].promocion.infoPromo.idSecundario != 0)
                         { //OFERTA COMBO
-                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, 0, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, 'V');`; 
-                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, 0, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadSecundario*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealSecundario.toFixed(2)}, 'V');`; 
+                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${data.info.lista[i].promocion.infoPromo.idPrincipal}, ${data.info.lista[i].promocion.infoPromo.cantidadPrincipal*data.info.lista[i].promocion.infoPromo.unidadesOferta}, ${data.info.lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, 'V');`; 
+                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${data.info.lista[i].promocion.infoPromo.idSecundario}, ${data.info.lista[i].promocion.infoPromo.cantidadSecundario*data.info.lista[i].promocion.infoPromo.unidadesOferta}, ${data.info.lista[i].promocion.infoPromo.precioRealSecundario.toFixed(2)}, 'V');`; 
                         }
                         else
                         { //OFERTA INDIVIDUAL
-                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, 0, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, 'V');`; 
+                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${data.info.lista[i].promocion.infoPromo.idPrincipal}, ${data.info.lista[i].promocion.infoPromo.cantidadPrincipal*data.info.lista[i].promocion.infoPromo.unidadesOferta}, ${data.info.lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, 'V');`; 
                         }
                     }
                     else
                     {
-                        sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, 0, '', ${idLista}, ${data.arrayTickets[j].lista[i].unidades}, ${data.arrayTickets[j].lista[i].subtotal}, 'V');`;
+                        sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${idLista}, ${data.info.lista[i].unidades}, ${data.info.lista[i].subtotal}, 'V');`;
                     }
                 }
     
                 conexion.recHit(data.parametros.database, sql).then(res => {
                     socket.emit('confirmarEnvioDevolucion', {
-                        idTicket: data.arrayTickets[j]._id,
+                        idTicket: data.info._id,
                         respuestaSql: res
                     });
                 });
-            }
         })
 
         /* GUARDAR FICHAJES */
