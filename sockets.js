@@ -198,7 +198,8 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     
                     if(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")
                     {
-                        var idFinalTrabajador = await conexion.recHit(data.parametros.database, `SELECT valor FROM dependentesExtes WHERE id = ${data.arrayTickets[j].idTrabajador} AND nom = 'CODICFINAL'`).recordset[0].valor;
+                        var idFinalTrabajador = await conexion.recHit(data.parametros.database, `SELECT valor FROM dependentesExtes WHERE id = ${data.arrayTickets[j].idTrabajador} AND nom = 'CODICFINAL'`);//await conexion.recHit(data.parametros.database, `SELECT valor FROM dependentesExtes WHERE id = ${data.arrayTickets[j].idTrabajador} AND nom = 'CODICFINAL'`).recordset[0].valor;
+                        console.log("idFinalTrabajador: ", idFinalTrabajador);
                         idFinalTrabajador = `[Id:${idFinalTrabajador}]`;
                         console.log("CORRECTO! ES CONSUMO PERSONAL: ", data.arrayTickets[j].tipoPago, "licencia: ", data.parametros.licencia);
                     }
