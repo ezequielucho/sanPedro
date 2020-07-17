@@ -139,7 +139,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             });
         });
 //------------------------------------------------------------------
-        socket.on('sincronizar-tickets-tocgame', data=>{
+        socket.on('sincronizar-tickets-tocgame', async (data)=>{
             for(let j = 0; j < data.arrayTickets.length; j++)
             {
                 let sql = '';
