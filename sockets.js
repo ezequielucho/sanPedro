@@ -500,7 +500,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             });
         });
 
-        /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) */
+        /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN VIEJA*/
         socket.on('guardar-movimientos', (data) => {
             console.log('Traza 1');
             let sql = '';
@@ -543,7 +543,50 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             }
             console.log(sql);
         });
-        /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) */
+        /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN VIEJA*/
+        /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
+        socket.on('guardarMovimiento', (data) => {
+            console.log('Traza 1');
+            let sql = '';
+
+            console.log('Traza 2');
+            let fecha = new Date(data.info.timestamp);
+            let year = `${fecha.getFullYear()}`;
+            let month = `${fecha.getMonth() + 1}`;
+            let day = `${fecha.getDate()}`;
+            let hours = `${fecha.getHours()}`;
+            let minutes = `${fecha.getMinutes()}`;
+            let seconds = `${fecha.getSeconds()}`;
+
+            if (month.length === 1) {
+                month = '0' + month;
+            }
+            if (day.length === 1) {
+                day = '0' + day;
+            }
+            if (hours.length === 1) {
+                hours = '0' + hours;
+            }
+            if (minutes.length === 1) {
+                minutes = '0' + minutes;
+            }
+            if (seconds.length === 1) {
+                seconds = '0' + seconds;
+            }
+            let nombreTabla = '[V_Moviments_' + year + '-' + month + ']';
+
+            sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 'O', ${data.info.valor}, '${data.info.concepto}');`;
+
+            conexion.recHit(data.parametros.database, sql).then(res2 => {
+                socket.emit('confirmarEnvioMovimiento', {
+                    idMovimiento: data.info.id,
+                    respuestaSql: res2
+                });
+            });
+            
+            console.log(sql);
+        });
+        /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
 
         /* FIN GUARDAR TICKET */
         /* GUARDAR CAJAS */
