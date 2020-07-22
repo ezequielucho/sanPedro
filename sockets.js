@@ -547,7 +547,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
         socket.on('guardarMovimiento', (data) => {
-            console.log('Traza 1');
+            console.log('Traza 1: ', data);
             let sql = '';
 
             console.log('Traza 2');
