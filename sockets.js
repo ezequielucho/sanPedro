@@ -544,13 +544,14 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             console.log(sql);
         });
         /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN VIEJA*/
+
         /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
         socket.on('guardarMovimiento', (data) => {
             console.log('Traza 1');
             let sql = '';
 
             console.log('Traza 2');
-            let fecha = new Date(data.info.timestamp);
+            let fecha = new Date(data.info._id);
             let year = `${fecha.getFullYear()}`;
             let month = `${fecha.getMonth() + 1}`;
             let day = `${fecha.getDate()}`;
