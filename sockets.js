@@ -580,7 +580,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
     
                 conexion.recHit(data.parametros.database, sql).then(res2 => {
                     socket.emit('confirmarEnvioMovimiento', {
-                        idMovimiento: data.info.id,
+                        idMovimiento: data.info._id,
                         respuestaSql: res2
                     });
                 });
