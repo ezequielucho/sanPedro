@@ -576,7 +576,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 }
                 let nombreTabla = '[V_Moviments_' + year + '-' + month + ']';
     
-                sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, ${(data.info.tipo == "ENTRADA") ? 'O':'A'}, ${data.info.valor}, '${data.info.concepto}');`;
+                sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, '${(data.info.tipo == "ENTRADA") ? 'O':'A'}', ${data.info.valor}, '${data.info.concepto}');`;
     
                 conexion.recHit(data.parametros.database, sql).then(res2 => {
                     socket.emit('confirmarEnvioMovimiento', {
