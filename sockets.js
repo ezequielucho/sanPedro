@@ -29,6 +29,9 @@ function configurarTarifasEspecialesViejo(articulos, arrayTarifasEspeciales) {
 function sincronizarClientes(io) {
     io.emit('ordenSincronizarTodo', 'Sincronizar tocGame con BBDD WEB');
 }
+function sincronizarTeclados(io) {
+    io.emit('ordenSincronizarTeclado', 'Sincronizar tocGame con BBDD WEB');
+}
 async function familiasPorObjetos(res5, database, codigoCliente, conexion)
 {
     let objPrincipal    = null;
@@ -63,6 +66,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     //setInterval(sincronizarClientes, 7200000, io);
+    setInterval(sincronizarTeclados, 7200000, io);
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
@@ -829,30 +833,30 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FIN DESCARGAR FAMILIAS */
 
         /* DESCARGAR TECLADO */
-        socket.on('descargar-teclado', (data) => {
-            conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then(resMenus => {
-                if (resMenus) {
-                    conexion.recHit(data.database, `SELECT Ambient as nomMenu,  (select nom from articles where codi = article) as nombreArticulo, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`).then((resTeclas) => {
-                        if (resTeclas) 
-                        {
-                            let objAux = 
-                            {
-                                menus: resMenus.recordset,
-                                teclas: resTeclas.recordset
-                            }
-                            socket.emit('descargar-teclado', objAux);
-                        }
-                        else {
-                            socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
-                        }
-                    });
-
+        socket.on('descargar-teclado', async (data) => {
+            let resMenus        = await conexion.recHit(data.database, `SELECT DISTINCT Ambient as nomMenu FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`);
+            let resTeclas       = await conexion.recHit(data.database, `SELECT Data, Ambient as nomMenu, (select EsSumable from articles where codi = article) as esSumable, (select nom from articles where codi = article) as nombreArticulo, article as idArticle, pos, color FROM TeclatsTpv WHERE Llicencia = ${data.licencia} AND Data = (select MAX(Data) FROM TeclatsTpv WHERE Llicencia = ${data.licencia} )`);
+            let resArticulos    = await conexion.recHit(data.database, 'SELECT Codi as _id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as esSumable, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles');
+            let auxArticulos    = await conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${codigoCliente}) AND TarifaCodi <> 0`);
+            resArticulos.recordset = configurarTarifasEspeciales(resArticulos.recordset, auxArticulos.recordset);
+            let resFamilias     = await conexion.recHit(data.database, 'SELECT Nom as nombre, Pare as padre FROM Families WHERE Nivell > 0');
+            let resPromos       = await conexion.recHit(data.database, `SELECT Id as _id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`);
+            if(resMenus && resTeclas && resArticulos && auxArticulos && resFamilias && resPromos)
+            {
+                let objEnviar = {
+                    error: false,
+                    menus: resMenus.recordset,
+                    teclas: resTeclas.recordset,
+                    articulos: resArticulos.recordset,
+                    familias: resFamilias.recordset,
+                    promociones: resPromos.recordset
                 }
-                else 
-                {
-                    socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
-                }
-            });
+                socket.emit('res-descargar-teclado', objEnviar);
+            }
+            else
+            {
+                socket.emit('res-descargar-teclado', {error: true});
+            }
         });
         /* FIN DESCARGAR TECLADO */
 
@@ -887,21 +891,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                                                         conexion.recHit(data.database, `select Variable AS nombreDato, Valor AS valorDato from paramsTpv where CodiClient = ${codigoCliente} AND (Variable = 'Capselera_1' OR Variable = 'Capselera_2')`).then(res10 => {
                                                                             conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(res6 => {
                                                                                 if (res6) {
-                                                                                    if(data.peticion == "TECLADO")
-                                                                                    {
-                                                                                        var auxObject = {
-                                                                                            error: false,
-                                                                                            menus: res1.recordset,
-                                                                                            teclas: res.recordset,
-                                                                                            articulos: res2.recordset,
-                                                                                            familias: res4.recordset,
-                                                                                            promociones: res5.recordset,
-                                                                                            sql: sqlPromos
-                                                                                        };
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        var auxObject = {
+                                                                                    var auxObject = {
                                                                                             error: false,
                                                                                             menus: res1.recordset,
                                                                                             teclas: res.recordset,
@@ -914,7 +904,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                                                                             sql: sqlPromos
                                                                                         };
                                                                                         
-                                                                                    }
+                                                                                    
                                                                                     socket.emit('cargar-todo', auxObject);                                                                                    
                                                                                 }
                                                                                 else {
