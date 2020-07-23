@@ -841,6 +841,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             resArticulos.recordset = configurarTarifasEspeciales(resArticulos.recordset, auxArticulos.recordset);
             let resFamilias     = await conexion.recHit(data.database, 'SELECT Nom as nombre, Pare as padre FROM Families WHERE Nivell > 0');
             let resPromos       = await conexion.recHit(data.database, `SELECT Id as _id, Di as fechaInicio, Df as fechaFinal, D_Producte as principal, D_Quantitat as cantidadPrincipal, S_Producte as secundario, S_Quantitat as cantidadSecundario, S_Preu as precioFinal FROM ProductesPromocionats WHERE Client = ${data.licencia}`);
+            resPromos = await familiasPorObjetos(resPromos, data.database, data.codigoTienda, conexion);
             if(resMenus && resTeclas && resArticulos && auxArticulos && resFamilias && resPromos)
             {
                 let objEnviar = {
