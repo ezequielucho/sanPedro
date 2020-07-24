@@ -618,7 +618,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             let inicioMinutes = `${fechaInicio.getMinutes()}`;
             let inicioSeconds = `${fechaInicio.getSeconds()}`;
 
-            let sumaEfectivoTarjetaTotal = data.info.recaudado - data.info.descuadre;
             let descuadre = data.info.descuadre;
             let nClientes = data.info.nClientes;
 
@@ -705,7 +704,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
             sqlAna = `INSERT INTO feinesafer VALUES (newid(), 'VigilarAlertes', 0, 'Caixa', '[${inicioDay}-${inicioMonth}-${inicioYear} de ${inicioHours}:${inicioMinutes} a ${finalHours}:${finalMinutes}]', '[${data.parametros.codigoTienda}]', '${descuadre}', '${data.info.calaixFetZ}', getdate());`;
             sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', 0, '[${data.parametros.codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', '[${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}]', '[${data.info.primerTicket},${data.info.ultimoTicket}]', '[${data.info.calaixFetZ}]', getdate());`;
-            console.log("sqlAna2: ", sqlAna2);
 
             let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + sqlAna2;
             conexion.recHit(data.parametros.database, sqlCompleta).then(aux => {
