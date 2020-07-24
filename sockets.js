@@ -600,122 +600,120 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* FIN GUARDAR TICKET */
         /* GUARDAR CAJAS */
-        socket.on('guardar-caja', (data) => {
-            for (let i = 0; i < data.arrayCajas.length; i++) {
-                let fechaFinal = new Date(data.arrayCajas[i].finalTime);
-                let fechaInicio = new Date(data.arrayCajas[i].inicioTime);
+    socket.on('guardar-caja', (data) => {
+            let fechaFinal = new Date(data.info.finalTime);
+            let fechaInicio = new Date(data.info.inicioTime);
 
-                let finalYear = `${fechaFinal.getFullYear()}`;
-                let finalMonth = `${fechaFinal.getMonth() + 1}`;
-                let finalDay = `${fechaFinal.getDate()}`;
-                let finalHours = `${fechaFinal.getHours()}`;
-                let finalMinutes = `${fechaFinal.getMinutes()}`;
-                let finalSeconds = `${fechaFinal.getSeconds()}`;
+            let finalYear = `${fechaFinal.getFullYear()}`;
+            let finalMonth = `${fechaFinal.getMonth() + 1}`;
+            let finalDay = `${fechaFinal.getDate()}`;
+            let finalHours = `${fechaFinal.getHours()}`;
+            let finalMinutes = `${fechaFinal.getMinutes()}`;
+            let finalSeconds = `${fechaFinal.getSeconds()}`;
 
-                let inicioYear = `${fechaInicio.getFullYear()}`;
-                let inicioMonth = `${fechaInicio.getMonth() + 1}`;
-                let inicioDay = `${fechaInicio.getDate()}`;
-                let inicioHours = `${fechaInicio.getHours()}`;
-                let inicioMinutes = `${fechaInicio.getMinutes()}`;
-                let inicioSeconds = `${fechaInicio.getSeconds()}`;
+            let inicioYear = `${fechaInicio.getFullYear()}`;
+            let inicioMonth = `${fechaInicio.getMonth() + 1}`;
+            let inicioDay = `${fechaInicio.getDate()}`;
+            let inicioHours = `${fechaInicio.getHours()}`;
+            let inicioMinutes = `${fechaInicio.getMinutes()}`;
+            let inicioSeconds = `${fechaInicio.getSeconds()}`;
 
-                let sumaEfectivoTarjetaTotal = data.arrayCajas[i].recaudado - data.arrayCajas[i].descuadre;
-                let descuadre = data.arrayCajas[i].descuadre;
-                let nClientes = data.arrayCajas[i].nClientes;
+            let sumaEfectivoTarjetaTotal = data.info.recaudado - data.info.descuadre;
+            let descuadre = data.info.descuadre;
+            let nClientes = data.info.nClientes;
 
-                if (finalMonth.length === 1) {
-                    finalMonth = '0' + finalMonth;
-                }
-                if (finalDay.length === 1) {
-                    finalDay = '0' + finalDay;
-                }
-                if (finalHours.length === 1) {
-                    finalHours = '0' + finalHours;
-                }
-                if (finalMinutes.length === 1) {
-                    finalMinutes = '0' + finalMinutes;
-                }
-                if (finalSeconds.length === 1) {
-                    finalSeconds = '0' + finalSeconds;
-                }
-                //-------------------------------------
-                if (inicioMonth.length === 1) {
-                    inicioMonth = '0' + inicioMonth;
-                }
-                if (inicioDay.length === 1) {
-                    inicioDay = '0' + inicioDay;
-                }
-                if (inicioHours.length === 1) {
-                    inicioHours = '0' + inicioHours;
-                }
-                if (inicioMinutes.length === 1) {
-                    inicioMinutes = '0' + inicioMinutes;
-                }
-                if (inicioMinutes.length === 1) {
-                    inicioMinutes = '0' + inicioMinutes;
-                }
-
-                let sqlZGJ = '';
-                let sqlW = '';
-                let sqlWi = '';
-                let sqlO = '';
-                let sqlAna = '';
-                let sqlAna2 = '';
-                let nombreTabla = '[V_Moviments_' + finalYear + '-' + finalMonth + ']';
-
-                sqlZGJ = `
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'Z', ${sumaEfectivoTarjetaTotal}, '');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'G', ${nClientes}, '');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'J', ${descuadre}, '');
-                          `;
-
-                sqlW = `
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[0].valor}, 'En : 0.01');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[1].valor}, 'En : 0.02');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[2].valor}, 'En : 0.05');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[3].valor}, 'En : 0.1');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[4].valor}, 'En : 0.2');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[5].valor}, 'En : 0.5');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[6].valor}, 'En : 1');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[7].valor}, 'En : 2');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[8].valor}, 'En : 5');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[9].valor}, 'En : 10');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[10].valor}, 'En : 20');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[11].valor}, 'En : 50');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[12].valor}, 'En : 100');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[13].valor}, 'En : 200');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.arrayCajas[i].finalDependenta}, 'W', ${data.arrayCajas[i].detalleCierre[14].valor}, 'En : 500');
-                        `;
-                sqlWi = `
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[0].valor}, 'En : 0.01');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[1].valor}, 'En : 0.02');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[2].valor}, 'En : 0.05');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[3].valor}, 'En : 0.1');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[4].valor}, 'En : 0.2');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[5].valor}, 'En : 0.5');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[6].valor}, 'En : 1');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[7].valor}, 'En : 2');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[8].valor}, 'En : 5');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[9].valor}, 'En : 10');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[10].valor}, 'En : 20');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[11].valor}, 'En : 50');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[12].valor}, 'En : 100');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[13].valor}, 'En : 200');
-                            INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.arrayCajas[i].inicioDependenta}, 'Wi', ${data.arrayCajas[i].detalleApertura[14].valor}, 'En : 500');
-                `;
-
-                sqlAna = `INSERT INTO feinesafer VALUES (newid(), 'VigilarAlertes', 0, 'Caixa', '[${inicioDay}-${inicioMonth}-${inicioYear} de ${inicioHours}:${inicioMinutes} a ${finalHours}:${finalMinutes}]', '[${data.codigoTienda}]', '${descuadre}', '${sumaEfectivoTarjetaTotal}', getdate());`;
-                sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', 0, '[${data.codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', '[${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}]', '[${data.arrayCajas[i].primerTicket},${data.arrayCajas[i].ultimoTicket}]', '[${sumaEfectivoTarjetaTotal}]', getdate());`;
-                console.log("sqlAna2: ", sqlAna2);
-
-                let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + sqlAna2;
-                conexion.recHit(data.database, sqlCompleta).then(aux => {
-                    socket.emit('confirmarEnvioCaja', {
-                        idCaja: data.arrayCajas[i].id,
-                        respuestaSql: aux
-                    });
-                });
+            if (finalMonth.length === 1) {
+                finalMonth = '0' + finalMonth;
             }
+            if (finalDay.length === 1) {
+                finalDay = '0' + finalDay;
+            }
+            if (finalHours.length === 1) {
+                finalHours = '0' + finalHours;
+            }
+            if (finalMinutes.length === 1) {
+                finalMinutes = '0' + finalMinutes;
+            }
+            if (finalSeconds.length === 1) {
+                finalSeconds = '0' + finalSeconds;
+            }
+            //-------------------------------------
+            if (inicioMonth.length === 1) {
+                inicioMonth = '0' + inicioMonth;
+            }
+            if (inicioDay.length === 1) {
+                inicioDay = '0' + inicioDay;
+            }
+            if (inicioHours.length === 1) {
+                inicioHours = '0' + inicioHours;
+            }
+            if (inicioMinutes.length === 1) {
+                inicioMinutes = '0' + inicioMinutes;
+            }
+            if (inicioMinutes.length === 1) {
+                inicioMinutes = '0' + inicioMinutes;
+            }
+
+            let sqlZGJ = '';
+            let sqlW = '';
+            let sqlWi = '';
+            let sqlO = '';
+            let sqlAna = '';
+            let sqlAna2 = '';
+            let nombreTabla = '[V_Moviments_' + finalYear + '-' + finalMonth + ']';
+
+            sqlZGJ = `
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'Z', ${data.info.calaixFetZ}, '');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'G', ${nClientes}, '');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'J', ${descuadre}, '');
+                    `;
+
+            sqlW = `
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[0].valor}, 'En : 0.01');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[1].valor}, 'En : 0.02');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[2].valor}, 'En : 0.05');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[3].valor}, 'En : 0.1');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[4].valor}, 'En : 0.2');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[5].valor}, 'En : 0.5');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[6].valor}, 'En : 1');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[7].valor}, 'En : 2');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[8].valor}, 'En : 5');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[9].valor}, 'En : 10');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[10].valor}, 'En : 20');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[11].valor}, 'En : 50');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[12].valor}, 'En : 100');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[13].valor}, 'En : 200');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}', 120), ${data.info.finalDependenta}, 'W', ${data.info.detalleCierre[14].valor}, 'En : 500');
+                    `;
+            sqlWi = `
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[0].valor}, 'En : 0.01');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[1].valor}, 'En : 0.02');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[2].valor}, 'En : 0.05');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[3].valor}, 'En : 0.1');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[4].valor}, 'En : 0.2');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[5].valor}, 'En : 0.5');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[6].valor}, 'En : 1');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[7].valor}, 'En : 2');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[8].valor}, 'En : 5');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[9].valor}, 'En : 10');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[10].valor}, 'En : 20');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[11].valor}, 'En : 50');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[12].valor}, 'En : 100');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[13].valor}, 'En : 200');
+                        INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${inicioYear}-${inicioMonth}-${inicioDay} ${inicioHours}:${inicioMinutes}:${inicioSeconds}', 120), ${data.info.inicioDependenta}, 'Wi', ${data.info.detalleApertura[14].valor}, 'En : 500');
+            `;
+
+            sqlAna = `INSERT INTO feinesafer VALUES (newid(), 'VigilarAlertes', 0, 'Caixa', '[${inicioDay}-${inicioMonth}-${inicioYear} de ${inicioHours}:${inicioMinutes} a ${finalHours}:${finalMinutes}]', '[${data.parametros.codigoTienda}]', '${descuadre}', '${data.info.calaixFetZ}', getdate());`;
+            sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', 0, '[${data.parametros.codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', '[${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}]', '[${data.info.primerTicket},${data.info.ultimoTicket}]', '[${data.info.calaixFetZ}]', getdate());`;
+            console.log("sqlAna2: ", sqlAna2);
+
+            let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + sqlAna2;
+            conexion.recHit(data.parametros.database, sqlCompleta).then(aux => {
+                socket.emit('confirmarEnvioCaja', {
+                    idCaja: data.info._id,
+                    respuestaSql: aux
+                });
+            });
         });
 
         /* FIN GUARDAR CAJAS */
