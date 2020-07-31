@@ -707,8 +707,8 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
             sqlAna = `INSERT INTO feinesafer VALUES (newid(), 'VigilarAlertes', 0, 'Caixa', '[${inicioDay}-${inicioMonth}-${inicioYear} de ${inicioHours}:${inicioMinutes} a ${finalHours}:${finalMinutes}]', '[${data.parametros.codigoTienda}]', '${descuadre}', '${data.info.calaixFetZ}', getdate());`;
             sqlAna2 = `insert into feinesafer values (newid(), 'SincroMURANOCaixaOnLine', 0, '[${data.parametros.codigoTienda}]', '[${inicioDay}-${inicioMonth}-${inicioYear} ${inicioHours}:${inicioMinutes}:${inicioSeconds}]', '[${finalDay}-${finalMonth}-${finalYear} ${finalHours}:${finalMinutes}:${finalSeconds}]', '[${data.info.primerTicket},${data.info.ultimoTicket}]', '[${data.info.calaixFetZ}]', getdate());`;
-
-            let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + sqlAna2;
+            sqlPrevisiones =  `INSERT INTO feinesafer values (newid(), 'PrevisionsVendesDiari', 0, '${finalDay}/${finalMonth}/${finalYear}', '${data.parametros.codigoTienda}', '${(Number(finalHours) < 16) ? 'MATI': 'TARDA'}', '' ,'', GETDATE());`;
+            let sqlCompleta = sqlZGJ + sqlW + sqlWi + sqlAna + sqlAna2 + sqlPrevisiones;
             conexion.recHit(data.parametros.database, sqlCompleta).then(aux => {
                 socket.emit('confirmarEnvioCaja', {
                     idCaja: data.info._id,
