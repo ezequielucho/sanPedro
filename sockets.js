@@ -253,7 +253,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('guardarDevoluciones', data=>{
                 let sql = '';
                 let campoOtros = '';
-                
+                let sqlGraella = '';
                 let fechaTicket = new Date(data.info.timestamp);
                 
                 let year = `${fechaTicket.getFullYear()}`;
@@ -262,7 +262,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 let hours = `${fechaTicket.getHours()}`;
                 let minutes = `${fechaTicket.getMinutes()}`;
                 let seconds = `${fechaTicket.getSeconds()}`;
-    
+                let year2 = `${fechaTicket.getFullYear()%100}`;
+                if(year2.length === 1)
+                {
+                    year2 = '0' + year2;
+                }
                 if (month.length === 1) {
                     month = '0' + month;
                 }
@@ -315,19 +319,23 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         { //OFERTA COMBO
                             sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${data.info.lista[i].promocion.infoPromo.idPrincipal}, ${data.info.lista[i].promocion.infoPromo.cantidadPrincipal*data.info.lista[i].promocion.infoPromo.unidadesOferta}, ${data.info.lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, 'V');`; 
                             sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${data.info.lista[i].promocion.infoPromo.idSecundario}, ${data.info.lista[i].promocion.infoPromo.cantidadSecundario*data.info.lista[i].promocion.infoPromo.unidadesOferta}, ${data.info.lista[i].promocion.infoPromo.precioRealSecundario.toFixed(2)}, 'V');`; 
+                            sqlGraella += `INSERT INTO [Servit-${year2}-${month}-${day}] (Id, TimeStamp, QuiStamp, Client, CodiArticle, PluUtilitzat, Viatge, Equip, QuantitatDemanada, QuantitatTornada ,QuantitatServida, MotiuModificacio, Hora, TipusComanda, Comentari, ComentariPer, Atribut, CitaDemanada, CitaServida, CitaTornada) VALUES (newid(), GETDATE(), 'Botiga ${data.parametros.nombreTienda}', ${data.parametros.codigoTienda}, ${data.info.lista[i].promocion.infoPromo.idPrincipal}, NULL, 'AUTO', 'AUTO', 0, ${data.info.lista[i].promocion.infoPromo.cantidadPrincipal*data.info.lista[i].promocion.infoPromo.unidadesOferta}, 0, NULL, 91, 2, '', NULL, NULL, '', '', '');`;
+                            sqlGraella += `INSERT INTO [Servit-${year2}-${month}-${day}] (Id, TimeStamp, QuiStamp, Client, CodiArticle, PluUtilitzat, Viatge, Equip, QuantitatDemanada, QuantitatTornada ,QuantitatServida, MotiuModificacio, Hora, TipusComanda, Comentari, ComentariPer, Atribut, CitaDemanada, CitaServida, CitaTornada) VALUES (newid(), GETDATE(), 'Botiga ${data.parametros.nombreTienda}', ${data.parametros.codigoTienda}, ${data.info.lista[i].promocion.infoPromo.idSecundario}, NULL, 'AUTO', 'AUTO', 0, ${data.info.lista[i].promocion.infoPromo.cantidadSecundario*data.info.lista[i].promocion.infoPromo.unidadesOferta}, 0, NULL, 91, 2, '', NULL, NULL, '', '', '');`;
                         }
                         else
                         { //OFERTA INDIVIDUAL
                             sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${data.info.lista[i].promocion.infoPromo.idPrincipal}, ${data.info.lista[i].promocion.infoPromo.cantidadPrincipal*data.info.lista[i].promocion.infoPromo.unidadesOferta}, ${data.info.lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, 'V');`; 
+                            sqlGraella += `INSERT INTO [Servit-${year2}-${month}-${day}] (Id, TimeStamp, QuiStamp, Client, CodiArticle, PluUtilitzat, Viatge, Equip, QuantitatDemanada, QuantitatTornada ,QuantitatServida, MotiuModificacio, Hora, TipusComanda, Comentari, ComentariPer, Atribut, CitaDemanada, CitaServida, CitaTornada) VALUES (newid(), GETDATE(), 'Botiga ${data.parametros.nombreTienda}', ${data.parametros.codigoTienda}, ${data.info.lista[i].promocion.infoPromo.idPrincipal}, NULL, 'AUTO', 'AUTO', 0, ${data.info.lista[i].promocion.infoPromo.cantidadPrincipal*data.info.lista[i].promocion.infoPromo.unidadesOferta}, 0, NULL, 91, 2, '', NULL, NULL, '', '', '');`;
                         }
                     }
                     else
                     {
                         sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, 0, '', ${idLista}, ${data.info.lista[i].unidades}, ${data.info.lista[i].subtotal}, 'V');`;
+                        sqlGraella += `INSERT INTO [Servit-${year2}-${month}-${day}] (Id, TimeStamp, QuiStamp, Client, CodiArticle, PluUtilitzat, Viatge, Equip, QuantitatDemanada, QuantitatTornada ,QuantitatServida, MotiuModificacio, Hora, TipusComanda, Comentari, ComentariPer, Atribut, CitaDemanada, CitaServida, CitaTornada) VALUES (newid(), GETDATE(), 'Botiga ${data.parametros.nombreTienda}', ${data.parametros.codigoTienda}, ${idLista}, NULL, 'AUTO', 'AUTO', 0, ${data.info.lista[i].unidades}, 0, NULL, 91, 2, '', NULL, NULL, '', '', '');`;
                     }
                 }
     
-                conexion.recHit(data.parametros.database, sql).then(res => {
+                conexion.recHit(data.parametros.database, sql+sqlGraella).then(res => {
                     socket.emit('confirmarEnvioDevolucion', {
                         idTicket: data.info._id,
                         respuestaSql: res
