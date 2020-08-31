@@ -27,7 +27,9 @@ function configurarTarifasEspecialesViejo(articulos, arrayTarifasEspeciales) {
     return articulos;
 }
 function sincronizarClientes(io) {
-    io.emit('ordenSincronizarTodo', 'Sincronizar tocGame con BBDD WEB');
+    conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(info=>{
+        io.emit('res-descargar-clientes-finales', info.recordset);
+    });
 }
 function sincronizarTeclados(io) {
     io.emit('ordenSincronizarTeclado', 'Sincronizar tocGame con BBDD WEB');
@@ -65,7 +67,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
 }
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
-    //setInterval(sincronizarClientes, 7200000, io);
+    setInterval(sincronizarClientes, 7200000, io);
     setInterval(sincronizarTeclados, 7200000, io);
     io.on('connection', (socket) => {
         /* TEST */
@@ -865,6 +867,13 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             {
                 socket.emit('res-descargar-teclado', {error: true});
             }
+        });
+        /* FIN DESCARGAR TECLADO */
+        /* DESCARGAR TECLADO */
+        socket.on('descargar-clientes-finales', (data) => { //PARA LA SINCRONIZACION MANUAL DEL TOC, NO ESTÁ EN USO AHORA, PERO LO  DEBE ESTAR.
+            conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(info=>{
+                socket.emit('res-descargar-clientes-finales', info.recordset);
+            });
         });
         /* FIN DESCARGAR TECLADO */
 
