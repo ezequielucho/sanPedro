@@ -26,10 +26,9 @@ function configurarTarifasEspecialesViejo(articulos, arrayTarifasEspeciales) {
     }
     return articulos;
 }
-function sincronizarClientes(io, conexion) {
-    conexion.recHit(data.database, "select Id as id, Nom as nombre, IdExterna as tarjetaCliente from ClientsFinals WHERE Id IS NOT NULL AND Id <> ''").then(info=>{
-        io.emit('res-descargar-clientes-finales', info.recordset);
-    });
+function sincronizarClientes(io) {
+        io.emit('orden-descargar-clientes-finales', '');
+
 }
 function sincronizarTeclados(io) {
     io.emit('ordenSincronizarTeclado', 'Sincronizar tocGame con BBDD WEB');
@@ -67,7 +66,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
 }
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
-    setInterval(sincronizarClientes, 10000, io, conexion);
+    setInterval(sincronizarClientes, 10000, io);
     setInterval(sincronizarTeclados, 7200000, io);
     io.on('connection', (socket) => {
         /* TEST */
