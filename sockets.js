@@ -762,8 +762,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* ACTUALIZAR TOC */
         socket.on('peticion-actualizar-toc', (stringLicencia) => {
-            console.log("EEEEEEEEOOOOOO: ", stringLicencia);
-            socket.emit('orden-actualizar-toc', stringLicencia);
+            io.emit('orden-actualizar-toc', stringLicencia);
         });
         /* FIN ACTUALIZAR TOC*/
         /* DESCARGAR ARTÍCULOS */
