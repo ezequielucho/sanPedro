@@ -761,8 +761,8 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         /* ACTUALIZAR TOC */
-        socket.on('actualizar-toc', (data) => {
-            console.log("Hey Eze y Santi, me llega esto: ", data);
+        socket.on('peticion-actualizar-toc', (stringLicencia) => {
+            socket.emit('orden-actualizar-toc', stringLicencia);
         });
         /* FIN ACTUALIZAR TOC*/
         /* DESCARGAR ARTÍCULOS */
