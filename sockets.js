@@ -760,6 +760,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             }
         });
 
+        /* ACTUALIZAR TOC */
+        socket.on('actualizar-toc', (data) => {
+            console.log("Hey Eze y Santi, me llega esto: ", data);
+        });
+        /* FIN ACTUALIZAR TOC*/
         /* DESCARGAR ARTÍCULOS */
         socket.on('descargar-articulos', (data) => {
             conexion.recHit(data.database, 'SELECT Codi as id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as aPeso, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles').then(resSQL => {
