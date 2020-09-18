@@ -343,7 +343,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     });
                 });
         })
-
+        /* GET PUNTOS DE UN CLIENTE */
+        socket.on('get-puntos-cliente', (data) => {
+            conexion.recHit(data.database, `SELECT Punts AS puntos FROM punts WHERE idClient = '${data.idCliente}'`)
+        });
+        /* FINAL GET PUNTOS DE UN CLIENTE*/
         /* GUARDAR FICHAJES */
         socket.on('guardarFichajes', (data) => {
             var fechaEntrada = new Date(data.infoFichaje.fecha.year, data.infoFichaje.fecha.month, data.infoFichaje.fecha.day, data.infoFichaje.fecha.hours, data.infoFichaje.fecha.minutes, data.infoFichaje.fecha.seconds);
