@@ -346,7 +346,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* GET PUNTOS DE UN CLIENTE */
         socket.on('get-puntos-cliente', (data) => {
             conexion.recHit(data.parametros.database, `SELECT Punts AS puntos FROM punts WHERE idClient = '${data.idCliente}'`).then(resultado=>{
-                socket.emit('get-puntos-cliente', resultado.recordset);
+                if(resultado.recordset.length == 1)
+                {
+                    socket.emit('get-puntos-cliente', Number(resultado.recordset[0].puntos));
+                }
             });
         });
         /* FINAL GET PUNTOS DE UN CLIENTE*/
