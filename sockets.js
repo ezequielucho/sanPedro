@@ -182,6 +182,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     if (data.arrayTickets[j].tipoExtra == 'TARJETA')
                     {
                         campoOtros = '[Visa]';
+                        if(data.parametros.licencia == 842)
+                        {
+                            console.log("ESTOY ENTRANDO EN TARJETA");
+                        }
                     }
                     else 
                     {
