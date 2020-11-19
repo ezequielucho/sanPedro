@@ -179,7 +179,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
    
                 for (let i = 0; i < data.arrayTickets[j].lista.length; i++)
                 {
-                    if (data.arrayTickets[j].tarjeta)
+                    if (data.arrayTickets[j].tipoExtra == 'TARJETA')
                     {
                         campoOtros = '[Visa]';
                     }
