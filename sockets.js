@@ -179,6 +179,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
    
                 for (let i = 0; i < data.arrayTickets[j].lista.length; i++)
                 {
+                    if(data.parametros.licencia == 842)
+                    {
+                        console.log("Pero q es esto lol: ", data.arrayTickets[j].tipoExtra);
+                    }
                     if (data.arrayTickets[j].tipoExtra == 'TARJETA')
                     {
                         campoOtros = '[Visa]';
