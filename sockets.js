@@ -183,7 +183,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     {
                         console.log("Pero q es esto lol: ", data.arrayTickets[j].tipoExtra);
                     }
-                    if (data.arrayTickets[j].tipoExtra == 'TARJETA')
+                    if (data.arrayTickets[j].tipoPago == 'TARJETA')
                     {
                         campoOtros = '[Visa]';
                         if(data.parametros.licencia == 842)
