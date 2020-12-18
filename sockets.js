@@ -67,7 +67,7 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     setInterval(sincronizarClientes, 7300000, io);
-    setInterval(sincronizarTeclados, 60000, io);//7200000, io);
+    setInterval(sincronizarTeclados, 7200000, io);
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
