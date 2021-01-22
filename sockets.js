@@ -34,7 +34,7 @@ function sincronizarTeclados(io) {
     io.emit('ordenSincronizarTeclado', 'Sincronizar tocGame con BBDD WEB');
 }
 
-function sincronizarTrabajadores {
+function sincronizarTrabajadores(io) {
     io.emit('ordenSincronizarTrabajadores', 'Sincronización de trabajadores activa');
 }
 async function familiasPorObjetos(res5, database, codigoCliente, conexion)
