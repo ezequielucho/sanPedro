@@ -807,7 +807,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             conexion.recHit(data.database, 'select Codi as idTrabajador, Codi as _id, nom as nombre, memo as nombreCorto from dependentes').then(resSQL => {
                 if (resSQL) {
                     socket.emit('descargar-trabajadores', resSQL.recordset);
-
+                    console.log("Actualizando trabajadores: ", resSQL.recordset);
                 }
                 else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
