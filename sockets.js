@@ -33,6 +33,10 @@ function sincronizarClientes(io) {
 function sincronizarTeclados(io) {
     io.emit('ordenSincronizarTeclado', 'Sincronizar tocGame con BBDD WEB');
 }
+
+function sincronizarTrabajadores(io) {
+    io.emit('ordenSincronizarTrabajadores', 'Sincronización de trabajadores activa');
+}
 async function familiasPorObjetos(res5, database, codigoCliente, conexion)
 {
     let objPrincipal    = null;
@@ -68,6 +72,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 {
     setInterval(sincronizarClientes, 7300000, io);
     setInterval(sincronizarTeclados, 7200000, io);
+    setInterval(sincronizarTrabajadores, 7200000, io);
     io.on('connection', (socket) => {
         /* TEST */
         socket.on('eze-test', (data) => {
@@ -803,10 +808,9 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* DESCARGAR TRABAJADORES */
         socket.on('descargar-trabajadores', (data) => {
-            conexion.recHit(data.database, 'select Codi as idTrabajador, nom as nombre, memo as nombreCorto from dependentes').then(resSQL => {
+            conexion.recHit(data.database, 'select Codi as idTrabajador, Codi as _id, nom as nombre, memo as nombreCorto from dependentes').then(resSQL => {
                 if (resSQL) {
                     socket.emit('descargar-trabajadores', resSQL.recordset);
-
                 }
                 else {
                     socket.emit('error', "Error en la respuesta de la consulta SQL resSQL");
