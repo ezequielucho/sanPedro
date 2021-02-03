@@ -751,15 +751,20 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 conexion.recHit('Hit', `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db, ISNULL(ti.ultimoIdTicket, 0) as ultimoIdTicket FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom LEFT JOIN tocGame_idTickets ti ON ti.licencia = ${data.numLicencia} WHERE ll.Llicencia = ${data.numLicencia}`).then(function (data) {
                     conexion.recHit(data.recordset[0].Db, `SELECT Nom, Codi as codigoTienda FROM clients WHERE Codi = (SELECT Valor1 FROM ParamsHw WHERE Codi = ${data.recordset[0].Llicencia})`).then(data2 => {
                         if (data.recordset.length === 1) {
-                            socket.emit('install-licencia', {
-                                licencia: parseInt(data.recordset[0].Llicencia),
-                                nombreEmpresa: data.recordset[0].Empresa,
-                                database: data.recordset[0].Db,
-                                error: false,
-                                nombreTienda: data2.recordset[0].Nom,
-                                codigoTienda: data2.recordset[0].codigoTienda,
-                                ultimoTicket: data.recordset[0].ultimoIdTicket
-                            });
+                            conexion.recHit(data.recordset[0].Db, `SELECT Valor FROM paramstpv WHERE CodiClient = ${data.recordset[0].Llicencia} AND (Variable = 'BotonsPreu' OR Variable = 'ProhibirCercaArticles')`).then(dataF => {
+                                socket.emit('install-licencia', {
+                                    licencia: parseInt(data.recordset[0].Llicencia),
+                                    nombreEmpresa: data.recordset[0].Empresa,
+                                    database: data.recordset[0].Db,
+                                    error: false,
+                                    nombreTienda: data2.recordset[0].Nom,
+                                    codigoTienda: data2.recordset[0].codigoTienda,
+                                    ultimoTicket: data.recordset[0].ultimoIdTicket,
+                                    botonesConPrecios: dataF.recordset[0].Valor,
+                                    prohibirBuscarArticulos: dataF.recordset[1].Valor
+                                });
+                            })
+                            
                         }
                         else {
                             socket.emit('install-licencia', {
