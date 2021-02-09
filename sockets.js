@@ -115,14 +115,15 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         socket.on('comprobarClienteVIP', data=>{
             var objEnviar = {
                 esVip: false,
-                info: null
+                info: null,
+                idCliente: null
             };
             var sql = `
             DECLARE @idCliente int;
             SELECT @idCliente = Codi FROM ConstantsClient WHERE Variable = 'CFINAL' AND Valor = '${data.idCliente}'
             IF EXISTS (SELECT * FROM ConstantsClient WHERE Variable = 'EsClient' AND Valor = 'EsClient' AND Codi = @idCliente)
                 BEGIN
-                    SELECT 1 as resultado
+                    SELECT 1 as resultado, @idCliente as idCliente
                 END
             ELSE
                 BEGIN
@@ -142,6 +143,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         objEnviar.esVip = true;
                         conexion.recHit(data.parametros.database, `SELECT Nom as nombre, Nif as nif, Adresa as direccion, Ciutat as Ciudad, Cp as cp FROM Clients WHERE Codi = (SELECT TOP 1 Codi FROM ConstantsClient WHERE Valor = '${data.idCliente}' AND Variable = 'CFINAL')`).then(res2=>{
                             objEnviar.datos = res2.recordset[0];
+                            objEnviar.idCliente = res.idCliente
                             socket.emit('respuestaClienteEsVIP', objEnviar);
                         });
                     }
@@ -358,6 +360,18 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             });
         });
         /* FINAL GET PUNTOS DE UN CLIENTE*/
+
+        /* GET TARIFA CLIENTE VIP */
+        socket.on('cargarPreciosVIP', (data) => {
+            conexion.recHit(data.parametros.database, `SELECT Punts AS puntos FROM punts WHERE idClient = '${data.idCliente}'`).then(resultado=>{
+                if(resultado.recordset.length == 1)
+                {
+                    socket.emit('get-puntos-cliente', Number(resultado.recordset[0].puntos));
+                }
+            });
+        });
+        /* FINAL GET TARIFA CLIENTE VIP */
+
         /* GUARDAR FICHAJES */
         socket.on('guardarFichajes', (data) => {
             var fechaEntrada = new Date(data.infoFichaje.fecha.year, data.infoFichaje.fecha.month, data.infoFichaje.fecha.day, data.infoFichaje.fecha.hours, data.infoFichaje.fecha.minutes, data.infoFichaje.fecha.seconds);
