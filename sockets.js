@@ -364,12 +364,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* GET TARIFA CLIENTE VIP */
         socket.on('cargarPreciosVIP', (data) => {
-            conexion.recHit(data.parametros.database, `SELECT Punts AS puntos FROM punts WHERE idClient = '${data.idCliente}'`).then(resultado=>{
-                if(resultado.recordset.length == 1)
-                {
-                    socket.emit('get-puntos-cliente', Number(resultado.recordset[0].puntos));
-                }
-            });
+            let resArticulos    = await conexion.recHit(data.database, 'SELECT Codi as _id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as esSumable, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles');
+            let auxArticulos    = await conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.idCliente}) AND TarifaCodi <> 0`);
+            resArticulos.recordset = configurarTarifasEspeciales(resArticulos.recordset, auxArticulos.recordset);
+            socket.emit('resCargarPreciosVIP', resArticulos.recordset);
         });
         /* FINAL GET TARIFA CLIENTE VIP */
 
