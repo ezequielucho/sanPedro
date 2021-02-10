@@ -363,7 +363,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* FINAL GET PUNTOS DE UN CLIENTE*/
 
         /* GET TARIFA CLIENTE VIP */
-        socket.on('cargarPreciosVIP', (data) => {
+        socket.on('cargarPreciosVIP', async (data) => {
             let resArticulos    = await conexion.recHit(data.database, 'SELECT Codi as _id, NOM as nombre, PREU as precioConIva, TipoIva as tipoIva, EsSumable as esSumable, Familia as familia, ISNULL(PreuMajor, 0) as precioBase FROM Articles');
             let auxArticulos    = await conexion.recHit(data.database, `SELECT Codi as id, PREU as precioConIva FROM TarifesEspecials WHERE TarifaCodi = (select [Desconte 5] from clients where Codi = ${data.idCliente}) AND TarifaCodi <> 0`);
             resArticulos.recordset = configurarTarifasEspeciales(resArticulos.recordset, auxArticulos.recordset);
