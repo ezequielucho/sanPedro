@@ -624,6 +624,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 if(data.info.tipo == "SALIDA")
                 {
                     sqlBarras = `INSERT INTO CodisBarresReferencies (Num, Tipus, Estat, Data, TmSt, Param1, Param2, Param3, Param4) VALUES (${data.info.codigoBarras}, 'Moviments', 'Creat', CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.parametros.licencia}, ${data.info.idTrabajador}, ${-data.info.valor}, '${day}/${month}/${year} ${hours}:${minutes}:${seconds}');`;
+                    console.log("Hola el codigo es: ", sqlBarras);
                 }
                 conexion.recHit(data.parametros.database, sql+sqlBarras).then(res2 => {
                     socket.emit('confirmarEnvioMovimiento', {
