@@ -65,7 +65,6 @@ async function familiasPorObjetos(res5, database, codigoCliente, conexion)
         objPrincipal    = null;
         objSecundario   = null;
     }
-    console.log(res5);
     return res5;
 }
 function loadSockets(io, conexion) // Se devuelve data.recordset !!!
@@ -216,11 +215,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         var idFinalTrabajador = `[Id:${idFinalTrabajadorAux.recordset[0].valor}]`;
                         
                     }                
-
-                    if(data.parametros.licencia == 842)
-                    {
-                        console.log(` Soy licencia DEMO: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`);
-                    }
                     
                     if(data.arrayTickets[j].lista[i].promocion.esPromo)
                     {
@@ -318,10 +312,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         var idLista = data.info.lista[i]._id;
                     }
                     
-                    if(data.parametros.licencia == 842)
-                    {
-                        console.log(` La fechita guapa es: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`);
-                    }
                     if(data.info.lista[i].promocion.esPromo)
                     {
                         if(data.info.lista[i].promocion.infoPromo.idSecundario != 0)
@@ -400,16 +390,12 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             if (data.tipo === 'ENTRADA') {
 
                 let sqlEntrada = `INSERT INTO cdpDadesFichador (id, tmst, accio, usuari, idr, lloc, comentari) VALUES (0, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), 1, ${data.infoFichaje.idTrabajador}, NEWID(), ${data.idTienda}, '${data.nombreTienda}')`;
-                conexion.recHit(data.database, sqlEntrada).then(res => {
-                    console.log(res);
-                });
+                conexion.recHit(data.database, sqlEntrada);
             }
             else {
                 if (data.tipo === 'SALIDA') {
                     let sqlSalida = `INSERT INTO cdpDadesFichador (id, tmst, accio, usuari, idr, lloc, comentari) VALUES (0, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), 2, ${data.infoFichaje.idTrabajador}, NEWID(), ${data.idTienda}, '${data.nombreTienda}')`;
-                    conexion.recHit(data.database, sqlSalida).then(res => {
-                        console.log(res);
-                    });
+                    conexion.recHit(data.database, sqlSalida);
                 }
             }
         });
@@ -540,51 +526,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             });
         });
 
-        /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN VIEJA*/
-        socket.on('guardar-movimientos', (data) => {
-            console.log('Traza 1');
-            let sql = '';
-
-            for (let i = 0; i < data.arrayMovimientos.length; i++) {
-                console.log('Traza 2');
-                let fecha = new Date(data.arrayMovimientos[i].timestamp);
-                let year = `${fecha.getFullYear()}`;
-                let month = `${fecha.getMonth() + 1}`;
-                let day = `${fecha.getDate()}`;
-                let hours = `${fecha.getHours()}`;
-                let minutes = `${fecha.getMinutes()}`;
-                let seconds = `${fecha.getSeconds()}`;
-
-                if (month.length === 1) {
-                    month = '0' + month;
-                }
-                if (day.length === 1) {
-                    day = '0' + day;
-                }
-                if (hours.length === 1) {
-                    hours = '0' + hours;
-                }
-                if (minutes.length === 1) {
-                    minutes = '0' + minutes;
-                }
-                if (seconds.length === 1) {
-                    seconds = '0' + seconds;
-                }
-                let nombreTabla = '[V_Moviments_' + year + '-' + month + ']';
-
-                sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayMovimientos[i].idTrabajador}, 'O', ${data.arrayMovimientos[i].valor}, '${data.arrayMovimientos[i].concepto}');`;
-
-                conexion.recHit(data.database, sql).then(res2 => {
-                    socket.emit('confirmarEnvioMovimiento', {
-                        idMovimiento: data.arrayMovimientos[i].id,
-                        respuestaSql: res2
-                    });
-                });
-            }
-            console.log(sql);
-        });
-        /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN VIEJA*/
-
         /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
         socket.on('guardarMovimiento', (data) => {
             try
@@ -616,28 +557,28 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 }
                 let nombreTabla = '[V_Moviments_' + year + '-' + month + ']';
                 let concepto = data.info.concepto;
-                if(data.info.idTicket != -100) {
+                if(data.info.idTicket != -100) 
+                {
                     concepto = `Pagat Targeta: ${data.info.idTicket}`;
                 }
 
                 sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, '${(data.info.tipo == "SALIDA") ? 'O':'A'}', ${(data.info.tipo == "SALIDA") ? -data.info.valor : data.info.valor}, '${concepto}');`;
-                if(data.info.tipo == "SALIDA" && data.tipo.concepto != 'Targeta 3G' && data.tipo.concepto != 'Targeta')
+                if(data.info.codigoBarras != "")
                 {
                     sqlBarras = `INSERT INTO CodisBarresReferencies (Num, Tipus, Estat, Data, TmSt, Param1, Param2, Param3, Param4) VALUES (${data.info.codigoBarras}, 'Moviments', 'Creat', CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.parametros.licencia}, ${data.info.idTrabajador}, ${-data.info.valor}, '${day}/${month}/${year} ${hours}:${minutes}:${seconds}');`;
-                    console.log("Hola el codigo es: ", sqlBarras);
                 }
+
                 conexion.recHit(data.parametros.database, sql+sqlBarras).then(res2 => {
                     socket.emit('confirmarEnvioMovimiento', {
                         idMovimiento: data.info._id,
                         respuestaSql: res2
                     });
-                });
-                
-                console.log(sql);
+                });            
             }
             catch(err)
             {
-                console.log(data.info)
+                console.log(err);
+                console.log("Error en: ", data.info)
             }
         });
         /* FIN GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/

@@ -1,20 +1,5 @@
 var sql = require("mssql");
 
-async function recHitBuena(database, consultaSQL) /*¡DEVUELVE UNA PROMESA!*/ {
-    var config =
-    {
-        user: 'sa',
-        password: 'LOperas93786',
-        server: 'silema.hiterp.com',
-        database: database
-    };
-    let pool = await sql.connect(config)
-    let result = await pool.request().query(consultaSQL);
-    pool.close();
-    sql.close();
-    return result;
-}
-
 function recHit(database, consultaSQL) {
     var config =
     {
