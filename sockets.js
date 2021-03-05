@@ -569,7 +569,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 {
                     concepto = `Pagat Targeta: ${data.info.idTicket}`;
                 }
-
+                if(typeof data.info.idTrabajador == "undefined")
+                {
+                    data.info.idTrabajador = 975;
+                }
                 sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, '${(data.info.tipo == "SALIDA") ? 'O':'A'}', ${(data.info.tipo == "SALIDA") ? -data.info.valor : data.info.valor}, '${concepto}');`;
                 if(data.info.codigoBarras != "")
                 {
