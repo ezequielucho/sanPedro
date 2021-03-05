@@ -594,7 +594,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             }
             catch(err)
             {
-                conexion.recHit('Hit', `insert into test_eze_report (error) values ('${data} - ${String(err)}')`);
+                conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
                 console.log(err);
                 console.log("Error en: ", data.info)
             }
