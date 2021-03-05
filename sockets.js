@@ -590,6 +590,9 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         idMovimiento: data.info._id,
                         respuestaSql: res2
                     });
+                }).catch(err=>{
+                    console.log("Entro en el catch maldito");
+                    conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
                 });            
             }
             catch(err)
