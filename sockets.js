@@ -536,7 +536,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
         socket.on('guardarMovimiento', (data) => {
-            console.log("Entro en guardarMovimiento (pre-try)");
+            console.log("Entro en guardarMovimiento (pre-try). Tienda: ", data.parametros.codigoTienda);
             try
             {
                 let sql = '';
