@@ -152,104 +152,108 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 //------------------------------------------------------------------
         socket.on('sincronizar-tickets-tocgame', async (data)=>{
-            for(let j = 0; j < data.arrayTickets.length; j++)
-            {
-                let sql = '';
-                let campoOtros = '';
-                
-                let fechaTicket = new Date(data.arrayTickets[j].timestamp);
-                
-                let year = `${fechaTicket.getFullYear()}`;
-                let month = `${fechaTicket.getMonth() + 1}`;
-                let day = `${fechaTicket.getDate()}`;
-                let hours = `${fechaTicket.getHours()}`;
-                let minutes = `${fechaTicket.getMinutes()}`;
-                let seconds = `${fechaTicket.getSeconds()}`;
-    
-                if (month.length === 1) {
-                    month = '0' + month;
-                }
-                if (day.length === 1) {
-                    day = '0' + day;
-                }
-                if (hours.length === 1) {
-                    hours = '0' + hours;
-                }
-                if (minutes.length === 1) {
-                    minutes = '0' + minutes;
-                }
-                if (seconds.length === 1) {
-                    seconds = '0' + seconds;
-                }
-
-                let nombreTabla = `[V_Venut_${year}-${month}]`;
-                for (let i = 0; i < data.arrayTickets[j].lista.length; i++)
+            try{
+                for(let j = 0; j < data.arrayTickets.length; j++)
                 {
+                    let sql = '';
+                    let campoOtros = '';
                     
-                    if (data.arrayTickets[j].tipoPago == 'TARJETA')
-                    {
-                        campoOtros = '[Visa]';
-                    }
-                    else 
-                    {
-                        campoOtros = '';
-                    }
-                    if(data.arrayTickets[j].cliente !== null && data.arrayTickets[j].cliente !== undefined)
-                    {
-                        campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
-                    }
+                    let fechaTicket = new Date(data.arrayTickets[j].timestamp);
                     
-                    if(typeof data.arrayTickets[j].lista[i]._id === "object")
-                    {
-                        var idLista = data.arrayTickets[j].lista[i].idArticulo;
+                    let year = `${fechaTicket.getFullYear()}`;
+                    let month = `${fechaTicket.getMonth() + 1}`;
+                    let day = `${fechaTicket.getDate()}`;
+                    let hours = `${fechaTicket.getHours()}`;
+                    let minutes = `${fechaTicket.getMinutes()}`;
+                    let seconds = `${fechaTicket.getSeconds()}`;
+        
+                    if (month.length === 1) {
+                        month = '0' + month;
                     }
-                    if(typeof data.arrayTickets[j].lista[i].idArticulo === "undefined")
-                    {
-                        var idLista = data.arrayTickets[j].lista[i]._id;
+                    if (day.length === 1) {
+                        day = '0' + day;
                     }
-                    
-                    if(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")
+                    if (hours.length === 1) {
+                        hours = '0' + hours;
+                    }
+                    if (minutes.length === 1) {
+                        minutes = '0' + minutes;
+                    }
+                    if (seconds.length === 1) {
+                        seconds = '0' + seconds;
+                    }
+    
+                    let nombreTabla = `[V_Venut_${year}-${month}]`;
+                    for (let i = 0; i < data.arrayTickets[j].lista.length; i++)
                     {
-                        var idFinalTrabajadorAux = await conexion.recHit(data.parametros.database, `SELECT valor FROM dependentesExtes WHERE id = ${data.arrayTickets[j].idTrabajador} AND nom = 'CODICFINAL'`);//await conexion.recHit(data.parametros.database, `SELECT valor FROM dependentesExtes WHERE id = ${data.arrayTickets[j].idTrabajador} AND nom = 'CODICFINAL'`).recordset[0].valor;
                         
-                        var idFinalTrabajador = `[Id:${idFinalTrabajadorAux.recordset[0].valor}]`;
+                        if (data.arrayTickets[j].tipoPago == 'TARJETA')
+                        {
+                            campoOtros = '[Visa]';
+                        }
+                        else 
+                        {
+                            campoOtros = '';
+                        }
+                        if(data.arrayTickets[j].cliente !== null && data.arrayTickets[j].cliente !== undefined)
+                        {
+                            campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
+                        }
                         
-                    }                
-                    
-                    if(data.arrayTickets[j].lista[i].promocion.esPromo)
-                    {
-                        if(data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario != 0)
-                        { //OFERTA COMBO
-                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
-                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadSecundario*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealSecundario.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
+                        if(typeof data.arrayTickets[j].lista[i]._id === "object")
+                        {
+                            var idLista = data.arrayTickets[j].lista[i].idArticulo;
+                        }
+                        if(typeof data.arrayTickets[j].lista[i].idArticulo === "undefined")
+                        {
+                            var idLista = data.arrayTickets[j].lista[i]._id;
+                        }
+                        
+                        if(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")
+                        {
+                            var idFinalTrabajadorAux = await conexion.recHit(data.parametros.database, `SELECT valor FROM dependentesExtes WHERE id = ${data.arrayTickets[j].idTrabajador} AND nom = 'CODICFINAL'`);//await conexion.recHit(data.parametros.database, `SELECT valor FROM dependentesExtes WHERE id = ${data.arrayTickets[j].idTrabajador} AND nom = 'CODICFINAL'`).recordset[0].valor;
+                            
+                            var idFinalTrabajador = `[Id:${idFinalTrabajadorAux.recordset[0].valor}]`;
+                            
+                        }                
+                        
+                        if(data.arrayTickets[j].lista[i].promocion.esPromo)
+                        {
+                            if(data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario != 0)
+                            { //OFERTA COMBO
+                                sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
+                                sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadSecundario*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealSecundario.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
+                            }
+                            else
+                            { //OFERTA INDIVIDUAL
+                                sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
+                            }
                         }
                         else
-                        { //OFERTA INDIVIDUAL
-                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
+                        {
+                            sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${idLista}, ${data.arrayTickets[j].lista[i].unidades}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0 : data.arrayTickets[j].lista[i].subtotal}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`;
                         }
                     }
-                    else
-                    {
-                        sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${idLista}, ${data.arrayTickets[j].lista[i].unidades}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0 : data.arrayTickets[j].lista[i].subtotal}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`;
-                    }
-                }
-    
-                conexion.recHit(data.parametros.database, sql).then(res => {
-                    let sql2 = `IF EXISTS (SELECT * FROM tocGame_idTickets WHERE licencia = ${data.parametros.licencia}) 
-                                BEGIN
-                                UPDATE tocGame_idTickets SET ultimoIdTicket = ${data.arrayTickets[j]._id} WHERE licencia = ${data.parametros.licencia}
-                                END
-                                ELSE
-                                BEGIN
-                                    INSERT INTO tocGame_idTickets (licencia, bbdd, ultimoIdTicket) VALUES (${data.parametros.licencia}, '${data.parametros.database}', ${data.arrayTickets[j]._id})
-                                END`;
-                    conexion.recHit('Hit', sql2).then(res2 => {
-                        socket.emit('confirmarEnvioTicket', {
-                            idTicket: data.arrayTickets[j]._id,
-                            respuestaSql: res
+        
+                    conexion.recHit(data.parametros.database, sql).then(res => {
+                        let sql2 = `IF EXISTS (SELECT * FROM tocGame_idTickets WHERE licencia = ${data.parametros.licencia}) 
+                                    BEGIN
+                                    UPDATE tocGame_idTickets SET ultimoIdTicket = ${data.arrayTickets[j]._id} WHERE licencia = ${data.parametros.licencia}
+                                    END
+                                    ELSE
+                                    BEGIN
+                                        INSERT INTO tocGame_idTickets (licencia, bbdd, ultimoIdTicket) VALUES (${data.parametros.licencia}, '${data.parametros.database}', ${data.arrayTickets[j]._id})
+                                    END`;
+                        conexion.recHit('Hit', sql2).then(res2 => {
+                            socket.emit('confirmarEnvioTicket', {
+                                idTicket: data.arrayTickets[j]._id,
+                                respuestaSql: res
+                            });
                         });
                     });
-                });
+                }
+            } catch(err){
+                conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
             }
         })
 //------------------------------------------------------------------
@@ -342,7 +346,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     });
                 });
             }catch(err){
-                console.log(err);
+                conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
             }
         })
         /* GET PUNTOS DE UN CLIENTE */
@@ -500,6 +504,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 }   
             } catch(err){
                 console.log(err);
+                conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
             }
         });
         /* GUARDAR TICKET */
@@ -536,7 +541,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 
         /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
         socket.on('guardarMovimiento', (data) => {
-            console.log("Entro en guardarMovimiento (pre-try). Tienda: ", data.parametros.codigoTienda);
             try
             {
                 let sql = '';
@@ -586,15 +590,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     sqlBarras = `INSERT INTO CodisBarresReferencies (Num, Tipus, Estat, Data, TmSt, Param1, Param2, Param3, Param4) VALUES (${data.info.codigoBarras}, 'Moviments', 'Creat', CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.parametros.licencia}, ${data.info.idTrabajador}, ${-data.info.valor}, '${day}/${month}/${year} ${hours}:${minutes}:${seconds}');`;
                 }
 
-                if(data.parametros.codigoTienda == 819 || data.parametros.codigoTienda == 842)
-                {
-                    console.log("Antes del if ", sql+sqlBarras);
-                }
                 conexion.recHit(data.parametros.database, sql+sqlBarras).then(res2 => {
-                    if(data.parametros.codigoTienda == 819 || data.parametros.codigoTienda == 842)
-                    {
-                        console.log("Despues del if ");
-                    }
                     socket.emit('confirmarEnvioMovimiento', {
                         idMovimiento: data.info._id,
                         respuestaSql: res2
@@ -730,6 +726,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 });
             }catch(err){
                 console.log(err);
+                conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
             }
         });
 
