@@ -563,6 +563,10 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 if (seconds.length === 1) {
                     seconds = '0' + seconds;
                 }
+                if(typeof data.info.idTicket == "undefined")
+                {
+                    data.info.idTicket = 0;
+                }
                 let nombreTabla = '[V_Moviments_' + year + '-' + month + ']';
                 let concepto = data.info.concepto;
                 if(data.info.idTicket != -100) 
@@ -573,6 +577,8 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 {
                     data.info.idTrabajador = 975;
                 }
+
+
                 sql = `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Tipus_moviment, Import, Motiu) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.info.idTrabajador}, '${(data.info.tipo == "SALIDA") ? 'O':'A'}', ${(data.info.tipo == "SALIDA") ? -data.info.valor : data.info.valor}, '${concepto}');`;
                 if(data.info.codigoBarras != "")
                 {
