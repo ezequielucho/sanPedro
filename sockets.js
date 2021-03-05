@@ -585,7 +585,15 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                     sqlBarras = `INSERT INTO CodisBarresReferencies (Num, Tipus, Estat, Data, TmSt, Param1, Param2, Param3, Param4) VALUES (${data.info.codigoBarras}, 'Moviments', 'Creat', CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.parametros.licencia}, ${data.info.idTrabajador}, ${-data.info.valor}, '${day}/${month}/${year} ${hours}:${minutes}:${seconds}');`;
                 }
 
+                if(data.parametros.codigoTienda == 819 || data.parametros.codigoTienda == 842)
+                {
+                    console.log("Antes del if ", sql+sqlBarras);
+                }
                 conexion.recHit(data.parametros.database, sql+sqlBarras).then(res2 => {
+                    if(data.parametros.codigoTienda == 819 || data.parametros.codigoTienda == 842)
+                    {
+                        console.log("Despues del if ");
+                    }
                     socket.emit('confirmarEnvioMovimiento', {
                         idMovimiento: data.info._id,
                         respuestaSql: res2
