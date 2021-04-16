@@ -731,6 +731,25 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         });
 
         /* FIN GUARDAR CAJAS */
+        /* INICIO COMPROBAR Y GUARDAR NUEVO CLIENTE*/
+        socket.on('guardarNuevoCliente', (data) => {
+            const idCliente     = data.idCliente; //STRING
+            const nombreCliente = data.nombreCliente; 
+            try
+            {
+                conexion.recHit(data.parametros.database, `
+                    INSERT INTO ClientsFinals (Id, IdExterna, Nom, Nif, Telefon, Adreca, emili, Descompte, Altres) VALUES (${idCliente}, NULL, ${nombreCliente}, NULL, '', '', '', '', '');
+                    INSERT INTO Punts (IdClient, Punts, data, Punts2, data2) VALUES ('', 0, GETDATE(), NULL, NULL);
+                `);
+            }
+            catch(err)
+            {
+                conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
+                console.log(err);
+                console.log("Error en: ", data.info)
+            }
+        });
+        /* FIN COMPROBAR Y GUARDAR NUEVO CLIENTE*/
         /* COMPROBAR E INSTALAR LICENCIA */
         socket.on('install-licencia', (data) => {
             if (data.password == 'LOperas93786') {
