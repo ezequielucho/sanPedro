@@ -195,6 +195,9 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         {
                             campoOtros = '';
                         }
+                        if(data.arrayTickets[j].tipoPago == 'TICKET_RESTAURANT'){
+                            campoOtros = `[TkRs:${data.arrayTickets[j].cantidadTkrs}]`;
+                        }
                         if(data.arrayTickets[j].cliente !== null && data.arrayTickets[j].cliente !== undefined)
                         {
                             campoOtros += `[Id:${data.arrayTickets[j].cliente}]`;
@@ -233,6 +236,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         {
                             sql += `INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${idLista}, ${data.arrayTickets[j].lista[i].unidades}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0 : data.arrayTickets[j].lista[i].subtotal}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`;
                         }
+                        console.log(sql)
                     }
         
                     conexion.recHit(data.parametros.database, sql).then(res => {
@@ -576,7 +580,23 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 let concepto = data.info.concepto;
                 if(data.info.idTicket != -100) 
                 {
-                    concepto = `Pagat Targeta: ${data.info.idTicket}`;
+                    switch(data.info.tipoExtra){
+                        case 'TARJETA': concepto = `Pagat Targeta: ${data.info.idTicket}`; break;
+                        case 'TKRS_CON_EXCESO': 
+                            concepto = `Excs.TkRs:  [${data.info.idTicket}]`;
+                            break;
+                        case 'TKRS_SIN_EXCESO': 
+                            concepto = `Pagat TkRs:  [${data.info.idTicket}]`;
+                            break;
+                        case 'CONSUMO_PERSONAL': break;
+                    }
+                    if(data.info.tipoExtra == 'TKRS'){
+                        concepto = ``;
+                    }
+                    else if(data.info.tipoExtra == 'TARJETA'){
+                        
+                    }
+                    
                 }
                 if(typeof data.info.idTrabajador == "undefined")
                 {
@@ -734,8 +754,12 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
         /* COMPROBAR E INSTALAR LICENCIA */
         socket.on('install-licencia', (data) => {
             if (data.password == 'LOperas93786') {
-                conexion.recHit('Hit', `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db, ISNULL(ti.ultimoIdTicket, 0) as ultimoIdTicket FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom LEFT JOIN tocGame_idTickets ti ON ti.licencia = ${data.numLicencia} WHERE ll.Llicencia = ${data.numLicencia}`).then(function (data) {
-                    conexion.recHit(data.recordset[0].Db, `SELECT Nom, Codi as codigoTienda FROM clients WHERE Codi = (SELECT Valor1 FROM ParamsHw WHERE Codi = ${data.recordset[0].Llicencia})`).then(data2 => {
+                const sqlParaImprimir = `SELECT ll.Llicencia, ll.Empresa, ll.LastAccess, we.Db, ISNULL(ti.ultimoIdTicket, 0) as ultimoIdTicket FROM llicencies ll LEFT JOIN Web_Empreses we ON ll.Empresa = we.Nom LEFT JOIN tocGame_idTickets ti ON ti.licencia = ${data.numLicencia} WHERE ll.Llicencia = ${data.numLicencia}`;
+                
+                conexion.recHit('Hit', sqlParaImprimir).then(function (data) {
+                    const sqlParaImprimir2 = `SELECT Nom, Codi as codigoTienda FROM clients WHERE Codi = (SELECT Valor1 FROM ParamsHw WHERE Codi = ${data.recordset[0].Llicencia})`;
+                    console.log("La sql es: ", sqlParaImprimir2);
+                    conexion.recHit(data.recordset[0].Db, sqlParaImprimir2).then(data2 => {
                         if (data.recordset.length === 1) {
                             conexion.recHit(data.recordset[0].Db, `SELECT Valor FROM paramstpv WHERE CodiClient = ${data.recordset[0].Llicencia} AND (Variable = 'BotonsPreu' OR Variable = 'ProhibirCercaArticles')`).then(dataF => {
                                 socket.emit('install-licencia', {
