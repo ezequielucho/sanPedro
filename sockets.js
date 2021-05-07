@@ -224,39 +224,26 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                         {
                             if(data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario != 0)
                             { //OFERTA COMBO
-                                sql += `
-                                    IF NOT EXISTS (SELECT * FROM ${nombreTabla} WHERE botiga = ${data.parametros.codigoTienda} AND Num_tick = ${data.arrayTickets[j]._id})
-                                        BEGIN
-                                        `
-                                    sql += ` INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
-                                    sql += ` INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadSecundario*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealSecundario.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
-                                sql += ` END
-                                `;
+                                sql += ` INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
+                                sql += ` INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idSecundario}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadSecundario*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealSecundario.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
                             }
                             else
                             { //OFERTA INDIVIDUAL
-                                sql += `
-                                    IF NOT EXISTS (SELECT * FROM ${nombreTabla} WHERE botiga = ${data.parametros.codigoTienda} AND Num_tick = ${data.arrayTickets[j]._id})
-                                        BEGIN
-                                        `
-                                    sql += ` INSERT  INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
-                                sql += ` END
-                                `;
+                                sql += ` INSERT  INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${data.arrayTickets[j].lista[i].promocion.infoPromo.idPrincipal}, ${data.arrayTickets[j].lista[i].promocion.infoPromo.cantidadPrincipal*data.arrayTickets[j].lista[i].promocion.infoPromo.unidadesOferta}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0: data.arrayTickets[j].lista[i].promocion.infoPromo.precioRealPrincipal.toFixed(2)}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`; 
                             }
                         }
                         else
                         {
-                            sql += `
-                                    IF NOT EXISTS (SELECT * FROM ${nombreTabla} WHERE botiga = ${data.parametros.codigoTienda} AND Num_tick = ${data.arrayTickets[j]._id})
-                                        BEGIN
-                                        `
-                                    sql += ` INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${idLista}, ${data.arrayTickets[j].lista[i].unidades}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0 : data.arrayTickets[j].lista[i].subtotal}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`;
-                                    sql += ` END
-                                    `;
+                            sql += ` INSERT INTO ${nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.parametros.codigoTienda}, CONVERT(datetime, '${year}-${month}-${day} ${hours}:${minutes}:${seconds}', 120), ${data.arrayTickets[j].idTrabajador}, ${data.arrayTickets[j]._id}, '', ${idLista}, ${data.arrayTickets[j].lista[i].unidades}, ${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL") ? 0 : data.arrayTickets[j].lista[i].subtotal}, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? "Desc_100" : "V"}', 0, '${(data.arrayTickets[j].tipoPago === "CONSUMO_PERSONAL")? idFinalTrabajador : campoOtros}');`;
                         }
-                        // console.log(sql)
                     }
 
+                    sql = `
+                        IF NOT EXISTS (SELECT * FROM ${nombreTabla} WHERE botiga = ${data.parametros.codigoTienda} AND Num_tick = ${data.arrayTickets[j]._id})
+                            BEGIN
+                                ${sql}
+                            END
+                    `
                     conexion.recHit(data.parametros.database, sql).then(res => {
                         // console.log("Rows affected: ", res.rowsAffected.length)
                         if(res.rowsAffected.length > 0){
