@@ -153,6 +153,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
 //------------------------------------------------------------------
         socket.on('sincronizar-tickets-tocgame', async (data)=>{
             try{
+                console.log("LLEGA")
                 for(let j = 0; j < data.arrayTickets.length; j++)
                 {
                     let sql = '';
@@ -244,6 +245,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                                 ${sql}
                             END
                     `
+
                     conexion.recHit(data.parametros.database, sql).then(res => {
                         // console.log("Rows affected: ", res.rowsAffected.length)
                         if(res.rowsAffected.length > 0){
@@ -253,7 +255,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                             });
                             let sql2 = `IF EXISTS (SELECT * FROM tocGame_idTickets WHERE licencia = ${data.parametros.licencia}) 
                                     BEGIN
-                                        IF ((SELECT ultimoIdTicket FROM tocGame_idTickets WHERE licencia = 842) < ${data.arrayTickets[j]._id})
+                                        IF ((SELECT ultimoIdTicket FROM tocGame_idTickets WHERE licencia = ${data.parametros.licencia}) < ${data.arrayTickets[j]._id})
                                         BEGIN
                                             UPDATE tocGame_idTickets SET ultimoIdTicket = ${data.arrayTickets[j]._id} WHERE licencia = ${data.parametros.licencia}
                                         END
@@ -521,37 +523,6 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                 conexion.recHit('Hit', `insert into test_eze_report (error) values ('${JSON.stringify(data)} - ${String(err)}')`);
             }
         });
-        /* GUARDAR TICKET */
-        socket.on('guardar-ticket', (data) => {
-            let sql = '';
-            let campoOtros = '';
-            for (let i = 0; i < data.cesta.length; i++) {
-                if (data.tarjeta) {
-                    campoOtros = '[Visa]';
-                }
-                else {
-                    campoOtros = '';
-                }
-                sql += `INSERT INTO ${data.nombreTabla} (Botiga, Data, Dependenta, Num_tick, Estat, Plu, Quantitat, Import, Tipus_venta, FormaMarcar, Otros) VALUES (${data.codigoTienda}, CONVERT(datetime, '${data.fecha}', 120), ${data.idDependienta}, ${data.idTicket}, '', ${data.cesta[i].idArticulo}, ${data.cesta[i].unidades}, ${data.cesta[i].subtotal}, '${data.tipoVenta}', 0, '${campoOtros}');`;
-            }
-
-            conexion.recHit(data.database, sql).then(res => {
-                let sql2 = `IF EXISTS (SELECT * FROM tocGame_idTickets WHERE licencia = ${data.licencia}) 
-                            BEGIN
-                            UPDATE tocGame_idTickets SET ultimoIdTicket = ${data.idTicket} WHERE licencia = ${data.licencia}
-                            END
-                            ELSE
-                            BEGIN
-                                INSERT INTO tocGame_idTickets (licencia, bbdd, ultimoIdTicket) VALUES (${data.licencia}, '${data.database}', ${data.idTicket})
-                            END`;
-                conexion.recHit('Hit', sql2).then(res2 => {
-                    socket.emit('confirmarEnvioTicket', {
-                        idTicket: data.idTicket,
-                        respuestaSql: res
-                    });
-                });
-            });
-        });
 
         /* INICIO GUARDAR MOVIMIENTOS (ENTRADA/SALIDA) VERSIÓN NUEVA*/
         socket.on('guardarMovimiento', (data) => {
@@ -599,6 +570,7 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
                             concepto = `Pagat TkRs:  [${data.info.idTicket}]`;
                             break;
                         case 'CONSUMO_PERSONAL': break;
+                        case 'DEUDA': break; //el concepto de deuda se controla desde el tocGame
                     }
                     if(data.info.tipoExtra == 'TKRS'){
                         concepto = ``;
