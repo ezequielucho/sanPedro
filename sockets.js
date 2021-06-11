@@ -370,7 +370,11 @@ function loadSockets(io, conexion) // Se devuelve data.recordset !!!
             conexion.recHit(data.parametros.database, `SELECT Punts AS puntos FROM punts WHERE idClient = '${data.idCliente}'`).then(resultado=>{
                 if(resultado.recordset.length == 1)
                 {
-                    socket.emit('get-puntos-cliente', Number(resultado.recordset[0].puntos));
+                    if(data.imprimir) {
+                        socket.emit('imprimir-ticket-cliente', {puntos: Number(resultado.recordset[0].puntos), infoTicket: data.infoParaImprimir});
+                    } else {
+                        socket.emit('get-puntos-cliente', Number(resultado.recordset[0].puntos));
+                    }
                 }
             });
         });
